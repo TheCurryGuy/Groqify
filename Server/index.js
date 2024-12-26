@@ -6,7 +6,6 @@ const { Groq } = require('groq-sdk'); // Import Groq SDK
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 // Middleware to parse JSON and enable CORS
@@ -42,6 +41,6 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(3000, () => {
+  console.log(`Server is running `);
 });
