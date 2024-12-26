@@ -40,6 +40,13 @@ app.post('/api/chat', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch response from Groq API' });
   }
 });
+app.get("/", (req, res) => {
+
+  res.json({
+      message: "Server running"
+  })
+})
+
 
 // Start the server
 app.listen(3000, () => {
