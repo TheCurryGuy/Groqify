@@ -321,7 +321,7 @@ button:hover {
   
    
     .chat-box {
-        max-height: 50vh;
+        max-height: 70vh;
         padding: 8px;
     }
   
@@ -331,7 +331,6 @@ button:hover {
         width: 90%;
         gap: 5px;
         padding: 8px;
-        bottom: unset;
         border: none;
     }
   
