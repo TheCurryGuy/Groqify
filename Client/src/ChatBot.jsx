@@ -8,15 +8,17 @@ const Chatbot = () => {
   const [history, setHistory] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
-  const [selectedModel, setSelectedModel] = useState('Llama3-8b-8192');
+  const [selectedModel, setSelectedModel] = useState('Llama-3.1-8b-instant');
   const [messages, setMessages] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
   const [isDarkMode, setIsDarkMode] = useState(false); // Track the theme mode
 
   const models = [
-    'Llama3-8b-8192',
-    'Llama3-70b-8192',
+    'Llama-3.3-70b-versatile',
+    'Llama-3.1-8b-instant',
     'Mixtral-8x7b-32768',
+    'Llama3-70b-8192',
+    'Llama3-8b-8192',
     'gemma2-9b-it',
   ];
 
