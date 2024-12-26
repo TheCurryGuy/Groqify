@@ -162,7 +162,10 @@ const Chatbot = () => {
       </div>
 
       <div className="chat-main">
-        <h1>💬 An LLM Chat Hub</h1>
+        <div className="header">
+          <h1 className="groqify-header">Groqify</h1>
+        </div>
+        <h1 className='heading'>💬 An LLM Chat Hub</h1>
 
         <div className="chat-box">
           {messages.map((message, idx) => (
