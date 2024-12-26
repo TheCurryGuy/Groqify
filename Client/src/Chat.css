@@ -36,12 +36,13 @@ body{
   
 .header {
     margin-top: 0;
+    margin-bottom: 0;
     top: 5px;
     position: absolute;
 }
 
 .heading{
-    margin-top: 2vh;
+    margin-top: 5vh;
     color: var(--text-color-dark);
 }
 
@@ -369,9 +370,6 @@ button:hover {
     }
     .header{
         margin-bottom: 0;
-    }
-    .heading{
-        margin-top: 2vh;
     }
     .history-button {
         font-size: 0.9rem;
