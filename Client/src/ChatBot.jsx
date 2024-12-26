@@ -28,7 +28,7 @@ const Chatbot = () => {
     setUserInput('');
 
     try {
-      const res = await axios.post('http://localhost:5000/api/chat', {
+      const res = await axios.post('https://groqify-server.vercel.app/api/chat', {
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userInput },
