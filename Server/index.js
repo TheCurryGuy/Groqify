@@ -12,7 +12,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 // Middleware to parse JSON and enable CORS
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://groqify.vercel.app',
 }));
 
 // Initialize Groq client
