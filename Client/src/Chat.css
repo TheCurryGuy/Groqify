@@ -87,6 +87,10 @@ body{
     color: var(--text-color-dark);
 }
 
+.section p{
+    color: var(--text-color-dark);
+}
+
 .history-button {
     width: 100%;
     padding: 10px;
