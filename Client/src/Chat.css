@@ -367,8 +367,11 @@ button:hover {
     .section select {
         font-size: 0.9rem;
     }
+    .header{
+        margin-bottom: 0;
+    }
     .heading{
-        margin-top: 1vh;
+        margin-top: 2vh;
     }
     .history-button {
         font-size: 0.9rem;
