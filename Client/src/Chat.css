@@ -326,7 +326,7 @@ button:hover {
     }
   
     .input-container {
-        flex-direction: column;
+        flex-direction: row;
         margin-left: 2vw;
         width: 90%;
         gap: 5px;
@@ -336,13 +336,12 @@ button:hover {
   
    
     input[type="text"] {
-        width: 95%;
-        margin-right: 0;
+        width: 70%;
+        margin-right: 2px;
     }
   
     button {
-        width: 100%;
-        margin-top: 5px;
+        width: 28%;
     }
   
    
