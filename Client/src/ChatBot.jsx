@@ -159,6 +159,11 @@ const Chatbot = () => {
             <p>No Previous queries</p>
           )}
         </div>
+        <footer className="chat-footer">
+            <p style={{ textAlign: 'center', marginTop: '1rem' }}>
+              Made by ~TheCurryGuy
+            </p>
+        </footer>
       </div>
 
       <div className="chat-main">

@@ -272,6 +272,17 @@ button:hover {
     background-color: var(--bg-color-medium);
 }
 
+.chat-footer {
+    background-color: var(--bg-color-medium);
+    color: var(--text-color-dark); 
+    padding: 0.5vw 2.8vw;
+    border-radius: 5px;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 2vh;
+}
 
 @media (max-width: 1024px) {
     .sidebar {
@@ -338,7 +349,10 @@ button:hover {
         border: none;
         margin-bottom: 6vh;
     }
-  
+    .chat-footer {
+        font-size: 1rem;
+        padding: 0.5vw 3vw;  
+    }
    
     input[type="text"] {
         width: 95%;
