@@ -79,7 +79,7 @@ Follow these steps to set up and run the server:
 3. Start the client application:
 
    ```bash
-   npm start
+   npm run dev
    ```
 
    The client will be running on `http://localhost:3000`.
