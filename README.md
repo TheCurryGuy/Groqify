@@ -45,7 +45,7 @@ Follow these steps to set up and run the server:
 1. Navigate to the client directory:
 
    ```bash
-   cd client
+   cd Server
    ```
 
 2. Install the required dependencies & create the .env file :  
@@ -57,7 +57,7 @@ Follow these steps to set up and run the server:
 3. Start the server:
 
    ```bash
-   npm run server
+   node index.js
    ```
 
    The server will be running on `http://localhost:5000`.
@@ -67,7 +67,7 @@ Follow these steps to set up and run the server:
 1. Navigate to the client directory:
 
    ```bash
-   cd client
+   cd Client
    ```
 
 2. Install client dependencies:
