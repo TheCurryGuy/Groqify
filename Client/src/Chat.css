@@ -379,6 +379,9 @@ button:hover {
         padding: 8px;
         font-size: 0.9rem;
     }
+    .copy-btn{
+        width: 40%;
+    }
   
    
     .section {
