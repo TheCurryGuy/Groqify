@@ -134,6 +134,9 @@ body{
     gap: 5px;
 
 }
+.copy-btn{
+    width: 10vw;
+}
   
 .message {
     background-color: var(--bg-color-darker);

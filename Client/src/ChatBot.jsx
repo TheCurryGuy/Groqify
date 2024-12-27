@@ -191,7 +191,7 @@ const Chatbot = () => {
                 {message.type === 'bot' ? (
                   <div>
                     <ReactMarkdown>{message.text}</ReactMarkdown>
-                    <button onClick={() => handleCopyCode(message.text)}>Copy Response</button>
+                    <button className = "copy-btn" onClick={() => handleCopyCode(message.text)}>Copy Response</button>
                   </div>
                 ) : (
                   <p>{message.text}</p>
