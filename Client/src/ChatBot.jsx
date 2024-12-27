@@ -11,7 +11,8 @@ const Chatbot = () => {
   const [selectedModel, setSelectedModel] = useState('Llama-3.1-8b-instant');
   const [messages, setMessages] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-  const [isDarkMode, setIsDarkMode] = useState(false); // Track the theme mode
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); 
 
   const models = [
     'Llama-3.3-70b-versatile',
@@ -28,6 +29,7 @@ const Chatbot = () => {
     const newMessages = [...messages, { type: 'user', text: userInput }];
     setMessages(newMessages);
     setUserInput('');
+    setIsLoading(true);
 
     try {
       const res = await axios.post('https://groqify-server.vercel.app/api/chat', {
@@ -51,6 +53,8 @@ const Chatbot = () => {
         ...newMessages,
         { type: 'bot', text: 'An error occurred. Please try again.' },
       ]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -75,7 +79,11 @@ const Chatbot = () => {
         console.error('Failed to copy code: ', err);
       });
     } else {
-      alert('No code found to copy!');
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Text copied to clipboard!');
+      }).catch((err) => {
+        console.error('Failed to copy text: ', err);
+      });
     }
   };
 
@@ -183,7 +191,7 @@ const Chatbot = () => {
                 {message.type === 'bot' ? (
                   <div>
                     <ReactMarkdown>{message.text}</ReactMarkdown>
-                    <button onClick={() => handleCopyCode(message.text)}>Copy Code</button>
+                    <button onClick={() => handleCopyCode(message.text)}>Copy Response</button>
                   </div>
                 ) : (
                   <p>{message.text}</p>
@@ -191,6 +199,7 @@ const Chatbot = () => {
               </div>
             </div>
           ))}
+          {isLoading && <p className="loader">Generating Content ...</p>}
         </div>
 
         <div className="input-container">
@@ -198,7 +207,11 @@ const Chatbot = () => {
             type="text"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
-            placeholder="Enter your query..."
+            placeholder="Type your message here..."
+            className="chat-input"
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') handleSendMessage();
+            }}
           />
           <button onClick={handleSendMessage} disabled={!userInput.trim()}>
             Submit
