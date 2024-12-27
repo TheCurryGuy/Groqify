@@ -42,13 +42,19 @@ cd Groqify
 
 Follow these steps to set up and run the server:
 
-1. Install the required dependencies:
+1. Navigate to the client directory:
+
+   ```bash
+   cd client
+   ```
+
+2. Install the required dependencies & create the .env file :  
 
    ```bash
    npm install
    ```
 
-2. Start the server:
+3. Start the server:
 
    ```bash
    npm run server
