@@ -181,7 +181,13 @@ const Chatbot = () => {
           <h3>Choose a Model:</h3>
           <select
             value={selectedModel}
-            onChange={(e) => setSelectedModel(e.target.value)}>
+            onChange={(e) => {
+              const model = e.target.value;
+              setSelectedModel(model);
+              if (model === 'gemini-1.5-pro-latest') {
+                alert("This model is rate limited and can be used only for light tasks.");
+              }
+            }}>
             {models.map((model, index) => (
               <option key={index} value={model}>
                 {model}
