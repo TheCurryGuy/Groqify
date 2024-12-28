@@ -13,10 +13,15 @@ const Chatbot = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
   const [history, setHistory] = useState(() => {
-    // Fetching history from local storage if available
-    const savedHistory = localStorage.getItem('chatHistory');
-    return savedHistory ? JSON.parse(savedHistory) : [];
+    try {
+      const savedHistory = localStorage.getItem('chatHistory');
+      return savedHistory ? JSON.parse(savedHistory) : [];
+    } catch (error) {
+      console.error('Error loading history:', error);
+      return [];
+    }
   });
+  
 
   const models = [
     'Llama-3.3-70b-versatile',
@@ -26,14 +31,6 @@ const Chatbot = () => {
     'Llama3-8b-8192',
     'gemma2-9b-it',
   ];
-
-  useEffect(() => {
-    // On component mount, gotta fetch history from local storage if available
-    const savedHistory = localStorage.getItem('chatHistory');
-    if (savedHistory) {
-      setHistory(JSON.parse(savedHistory));
-    }
-  }, []);
 
   const HistoryRemover = () => {
     localStorage.removeItem('chatHistory');
@@ -185,7 +182,7 @@ const Chatbot = () => {
         <div className="section">
           <div className='history'>
             <h3>History:</h3>
-            <button onClick={HistoryRemover()}>X</button>
+            <button onClick={() => HistoryRemover()}>X</button>
           </div>
           {history.length > 0 ? (
             history.map((entry, idx) => (
