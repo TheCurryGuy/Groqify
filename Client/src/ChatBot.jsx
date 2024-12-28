@@ -35,6 +35,7 @@ const Chatbot = () => {
   const HistoryRemover = () => {
     localStorage.removeItem('chatHistory');
     setHistory([]);
+    setMessages([]);
   }
 
   const handleSendMessage = async () => {
