@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown'; 
 import './Chat.css';
@@ -68,15 +68,17 @@ const Chatbot = () => {
       setHistory((prevHistory) => {
         const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
         const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
-  
+      
         try {
+          console.log('Saving history to localStorage:', trimmedHistory); // Add logging
           localStorage.setItem('chatHistory', JSON.stringify(trimmedHistory));
         } catch (error) {
           console.error('Failed to save history to localStorage:', error);
         }
-  
+      
         return trimmedHistory;
       });
+      
     } catch (error) {
       console.error('Error fetching response:', error);
       setMessages([
