@@ -5,7 +5,6 @@ import './Chat.css';
 import { FaMoon, FaSun } from 'react-icons/fa';
 
 const Chatbot = () => {
-  const [history, setHistory] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
   const [selectedModel, setSelectedModel] = useState('Llama-3.1-8b-instant');
@@ -13,6 +12,11 @@ const Chatbot = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
+  const [history, setHistory] = useState(() => {
+    // Fetching history from local storage if available
+    const savedHistory = localStorage.getItem('chatHistory');
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  });
 
   const models = [
     'Llama-3.3-70b-versatile',
@@ -22,6 +26,10 @@ const Chatbot = () => {
     'Llama3-8b-8192',
     'gemma2-9b-it',
   ];
+
+  const HistoryRemover = () => {
+    localStorage.removeItem('chatHistory');
+  }
 
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
@@ -55,7 +63,9 @@ const Chatbot = () => {
       // Update history while maintaining 6 exchanges
       setHistory((prevHistory) => {
         const newHistory = [...prevHistory, { query: userInput, response: botResponse }];
-        return newHistory.length > 5 ? newHistory.slice(1) : newHistory;
+        const history = newHistory.length > 10? newHistory.slice(1) : newHistory;
+        localStorage.setItem('chatHistory', JSON.stringify(history));
+        return history;
       });
     } catch (error) {
       console.error('Error fetching response:', error);
@@ -165,7 +175,10 @@ const Chatbot = () => {
         </div>
 
         <div className="section">
-          <h3>History:</h3>
+          <div className='history'>
+            <h3>History:</h3>
+            <button onClick={HistoryRemover()}>X</button>
+          </div>
           {history.length > 0 ? (
             history.map((entry, idx) => (
               <button
