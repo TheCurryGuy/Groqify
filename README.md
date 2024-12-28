@@ -1,6 +1,6 @@
 # Groqify
 
-A lightning-fast chatbot powered by **Groq**. Designed for performance and efficiency, Groqify delivers a seamless conversational experience.
+A lightning-fast chatbot that is powered by both **Groq** & **Google GenAI**. Designed for performance and efficiency, Groqify delivers a seamless conversational experience.
 
 ## Table of Contents
 
@@ -26,6 +26,10 @@ Groqify is equipped with the following large language models (LLMs):
 | **Llama3-70b-8192**          | Specialized in processing mid-sized contexts efficiently with high accuracy. Great for summarization and mid-length document generation. |
 | **Llama3-8b-8192**           | A smaller variant for quick tasks where mid-level context is sufficient. Best used for small to medium-sized text inputs. |
 | **gemma2-9b-it**             | Fine-tuned for Italian language tasks, this model excels in translation, sentiment analysis, and Italian NLP. |
+| **gemini-1.5-flash**         | Powered by Google's Generative AI, optimized for high-speed responses in real-time applications. |
+| **gemini-1.5-pro-latest**    | The latest professional-grade model by Google's Generative AI, ideal for comprehensive NLP tasks and advanced data processing. |
+| **gemini-1.5-flash-8b**      | A balanced model by Google's Generative AI offering fast performance with precision for mid-level tasks. |
+
 
 ## Getting Started
 
