@@ -191,7 +191,7 @@ const Chatbot = () => {
         <div className="section">
           <div className='history'>
             <h3>History:</h3>
-            <button onClick={() => HistoryRemover()}>X</button>
+            {history.length > 0 ? (<button onClick={() => HistoryRemover()}>X</button>) : null}
           </div>
           {history.length > 0 ? (
             history.map((entry, idx) => (
