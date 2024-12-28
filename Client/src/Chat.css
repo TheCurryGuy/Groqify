@@ -52,6 +52,8 @@ body{
     position: fixed;
     z-index: 1000;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
     background-color: var(--bg-color-light-alt);
     box-sizing: border-box;
     border-right: 1px solid var(--text-color-dark);
@@ -278,13 +280,17 @@ button:hover {
 .chat-footer {
     background-color: var(--bg-color-medium);
     color: var(--text-color-dark); 
-    padding: 0.5vw 2.8vw;
+    padding: 0.5vw 2vw;
     border-radius: 5px;
     text-align: center;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-    position: absolute;
-    bottom: 2vh;
+    font-size: 0.8rem;
+    margin-top: auto;
+    
+}
+.foot-link{
+    text-decoration: none; 
+    color: inherit; 
 }
 
 @media (max-width: 1024px) {

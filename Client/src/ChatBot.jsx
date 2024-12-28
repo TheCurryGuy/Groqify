@@ -55,7 +55,7 @@ const Chatbot = () => {
       // Update history while maintaining 6 exchanges
       setHistory((prevHistory) => {
         const newHistory = [...prevHistory, { query: userInput, response: botResponse }];
-        return newHistory.length > 6 ? newHistory.slice(1) : newHistory;
+        return newHistory.length > 5 ? newHistory.slice(1) : newHistory;
       });
     } catch (error) {
       console.error('Error fetching response:', error);
@@ -180,8 +180,10 @@ const Chatbot = () => {
           )}
         </div>
         <footer className="chat-footer">
-            <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-              Made by ~TheCurryGuy
+            <p style={{ textAlign: 'center'}}>
+              <a href="https://www.linkedin.com/in/thecurryguy" target="_blank" className='foot-link'>
+                Made by TheCurryGuy
+              </a>
             </p>
         </footer>
       </div>
