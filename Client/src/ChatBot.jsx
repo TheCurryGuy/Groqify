@@ -15,7 +15,7 @@ const Chatbot = () => {
   const [history, setHistory] = useState(() => {
     try {
       const savedHistory = localStorage.getItem('chatHistory');
-      return savedHistory ? savedHistory : [];
+      return savedHistory ? JSON.parse(savedHistory) : [];
     } catch (error) {
       console.error('Error loading history:', error);
       return [];
@@ -70,8 +70,8 @@ const Chatbot = () => {
         const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
       
         try {
-          console.log('Saving history to localStorage:', trimmedHistory); // Add logging
-          localStorage.setItem('chatHistory', trimmedHistory);
+          console.log('Saving history to localStorage:', JSON.stringify(trimmedHistory)); // Add logging
+          localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
         } catch (error) {
           console.error('Failed to save history to localStorage:', error);
         }
