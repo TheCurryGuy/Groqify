@@ -34,6 +34,7 @@ const Chatbot = () => {
 
   const HistoryRemover = () => {
     localStorage.removeItem('chatHistory');
+    setHistory([]);
   }
 
   const handleSendMessage = async () => {
@@ -70,7 +71,6 @@ const Chatbot = () => {
         const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
       
         try {
-          console.log('Saving history to localStorage:', JSON.stringify(trimmedHistory)); // Add logging
           localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
         } catch (error) {
           console.error('Failed to save history to localStorage:', error);
