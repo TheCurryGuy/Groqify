@@ -45,32 +45,37 @@ const Chatbot = () => {
     setIsLoading(true);
   
     try {
-      // Prepare the recent history that is the last response and input
       const recentHistory = history.slice(-1).flatMap((entry) => [
         { role: 'user', content: entry.query },
         { role: 'assistant', content: entry.response },
       ]);
-      
+  
       const requestMessages = [
         { role: 'system', content: systemPrompt },
         ...recentHistory,
         { role: 'user', content: userInput },
       ];
+  
       const res = await axios.post('https://groqify-server.vercel.app/api/chat', {
         messages: requestMessages,
         model: selectedModel,
       });
   
       const botResponse = res.data.response;
-      // Update messages with bot response
+  
       setMessages([...newMessages, { type: 'bot', text: botResponse }]);
   
-      // Update history while maintaining 6 exchanges
       setHistory((prevHistory) => {
-        const newHistory = [...prevHistory, { query: userInput, response: botResponse }];
-        const history = newHistory.length > 10? newHistory.slice(1) : newHistory;
-        localStorage.setItem('chatHistory', JSON.stringify(history));
-        return history;
+        const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
+        const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
+  
+        try {
+          localStorage.setItem('chatHistory', JSON.stringify(trimmedHistory));
+        } catch (error) {
+          console.error('Failed to save history to localStorage:', error);
+        }
+  
+        return trimmedHistory;
       });
     } catch (error) {
       console.error('Error fetching response:', error);
@@ -82,6 +87,7 @@ const Chatbot = () => {
       setIsLoading(false);
     }
   };
+  
 
   const handleHistoryClick = (entry) => {
     setMessages([
