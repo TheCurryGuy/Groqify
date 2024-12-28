@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown'; 
 import './Chat.css';
@@ -26,6 +26,14 @@ const Chatbot = () => {
     'Llama3-8b-8192',
     'gemma2-9b-it',
   ];
+
+  useEffect(() => {
+    // On component mount, gotta fetch history from local storage if available
+    const savedHistory = localStorage.getItem('chatHistory');
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory));
+    }
+  }, []);
 
   const HistoryRemover = () => {
     localStorage.removeItem('chatHistory');
