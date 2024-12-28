@@ -217,7 +217,7 @@ const Chatbot = () => {
 
       <div className="chat-main">
         <div className="header">
-          <h1 className="groqify-header">Groqify🐣</h1>
+          <h1 className="groqify-header"><a href="https://groqify.vercel.app" className='head-link'>Groqify🐣</a></h1>
         </div>
         <h1 className='heading'>💬 An LLM Chat Hub</h1>
 

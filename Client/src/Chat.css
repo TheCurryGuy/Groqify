@@ -299,7 +299,7 @@ button:hover {
     margin-top: auto;
     
 }
-.foot-link{
+.foot-link, .head-link{
     text-decoration: none; 
     color: inherit; 
 }
