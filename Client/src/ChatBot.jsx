@@ -210,7 +210,7 @@ const Chatbot = () => {
         </div>
         <footer className="chat-footer">
             <p style={{ textAlign: 'center'}}>
-              <a href="https://www.linkedin.com/in/thecurryguy" target="_blank" className='foot-link'>
+              <a href="https://github.com/TheCurryGuy" target="_blank" className='foot-link'>
                 Made by TheCurryGuy
               </a>
             </p>
