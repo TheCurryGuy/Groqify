@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown'; 
 import './Chat.css';
@@ -15,7 +15,7 @@ const Chatbot = () => {
   const [history, setHistory] = useState(() => {
     try {
       const savedHistory = localStorage.getItem('chatHistory');
-      return savedHistory ? JSON.parse(savedHistory) : [];
+      return savedHistory ? savedHistory : [];
     } catch (error) {
       console.error('Error loading history:', error);
       return [];
@@ -69,14 +69,13 @@ const Chatbot = () => {
         const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
         const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
       
-        useEffect(() => {
-          try {
-            localStorage.setItem('chatHistory', JSON.stringify(trimmedHistory));
-          } catch (error) {
-            console.error('Failed to save history to localStorage:', error);
-          }
-        }, [trimmedHistory]);
-        
+        try {
+          console.log('Saving history to localStorage:', trimmedHistory); // Add logging
+          localStorage.setItem('chatHistory', trimmedHistory);
+        } catch (error) {
+          console.error('Failed to save history to localStorage:', error);
+        }
+      
         return trimmedHistory;
       });
       
