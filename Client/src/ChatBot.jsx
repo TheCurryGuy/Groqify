@@ -30,8 +30,8 @@ const Chatbot = () => {
     'Llama3-8b-8192',
     'gemma2-9b-it',
     'gemini-1.5-flash',
+    'gemini-1.5-flash-8b',
     'gemini-1.5-pro',
-    'gemini-1.5-flash-8b'
   ];
 
   const HistoryRemover = () => {
@@ -184,7 +184,7 @@ const Chatbot = () => {
             onChange={(e) => {
               const model = e.target.value;
               setSelectedModel(model);
-              if (model === 'gemini-1.5-pro-latest') {
+              if (model === 'gemini-1.5-pro') {
                 alert("This model is rate limited and can be used only for light tasks.");
               }
             }}>
