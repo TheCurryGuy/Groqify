@@ -14,7 +14,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 app.use(express.json());
 app.use(cors({
-    origin: 'https://groqify.vercel.app',
+    origin: 'https://groqify.vercel.app/',
 }));
   
 
