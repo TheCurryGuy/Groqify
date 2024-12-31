@@ -11,15 +11,19 @@ const app = express();
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY; 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const BACKUP_API_KEY = process.env.BACKUP_API_KEY;
 
 app.use(express.json());
 app.use(cors({
     origin: 'https://groqify.vercel.app'
 }));
   
+const backupModel = "Llama-3.3-70b-versatile";
 
 // Initialize Clients
 const groqClient = new Groq({ apiKey: GROQ_API_KEY });
+const groqClient2 = new Groq({ apiKey: BACKUP_API_KEY });
+
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
@@ -37,9 +41,9 @@ app.get("/", (req, res) => {
 
 app.post('/api/chat', async (req, res) => {
   const { messages, model } = req.body;
+  let response = '';
 
   try {
-    let response = '';
 
     if (model && model.startsWith('gemini')) {
       const geminiModel = genAI.getGenerativeModel({ model });
@@ -71,7 +75,24 @@ app.post('/api/chat', async (req, res) => {
     res.json({ response });
   } catch (error) {
     console.error('Error communicating with APIs:', error.message);
-    res.status(500).json({ error: 'Failed to fetch response from API' });
+    try{
+      const chatCompletion = await groqClient2.chat.completions.create({
+        messages: [
+          { role: "system", content: "You are a Backup Assistant, activated because the LLM the user was trying to access is currently busy. Your task is to assist the user in completing their respective tasks. Make sure to acknowledge your role at the beginning of each response and continue to help them efficiently." },
+          ...messages 
+        ],
+        model: backupModel,
+        temperature: 1,
+        max_tokens: 1024,
+        top_p: 1,
+        stream: false,
+      });
+      response = chatCompletion.choices[0]?.message?.content || 'No response generated.';
+    }
+    catch(error){
+      console.error('Error with backup API:', error.message);
+      res.status(500).json({ error: 'Failed to fetch response from both primary and backup APIs.' });
+    }
   }
 });
 
