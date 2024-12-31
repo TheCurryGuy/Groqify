@@ -50,7 +50,7 @@ app.post('/api/chat', async (req, res) => {
       const prompt = messages.map(msg => msg.content).join('\n');
       const result = await geminiModel.generateContent(prompt);
       response = result.response.text();
-    } else if (model && model.startsWith('pt')) {
+    } else if (model && model.startsWith('gpt')) {
       const result = await openAIClient.chat.completions.create({
         messages: messages,
         temperature: 1.0,
