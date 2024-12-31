@@ -88,6 +88,7 @@ app.post('/api/chat', async (req, res) => {
         stream: false,
       });
       response = chatCompletion.choices[0]?.message?.content || 'No response generated.';
+      res.json({ response });
     }
     catch(error){
       console.error('Error with backup API:', error.message);
