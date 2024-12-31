@@ -28,10 +28,12 @@ const Chatbot = () => {
     'Mixtral-8x7b-32768',
     'Llama3-70b-8192',
     'Llama3-8b-8192',
+    'gpt-4o-mini',
+    'gpt-4o',
     'gemma2-9b-it',
     'gemini-1.5-flash',
     'gemini-1.5-flash-8b',
-    'gemini-1.5-pro',
+    'gemini-1.5-pro'
   ];
 
   const HistoryRemover = () => {
