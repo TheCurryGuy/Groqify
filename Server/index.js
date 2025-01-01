@@ -43,13 +43,43 @@ app.post('/api/chat', async (req, res) => {
   const { messages, model } = req.body;
   let response = '';
 
-  try {
+  const invokeBackupAssistant = async () => {
+    try {
+      const backupCompletion = await groqClient2.chat.completions.create({
+        messages: [
+          { role: "system", content: "You are a Backup Assistant, activated because the primary model could not fulfill the task. Please assist the user efficiently." },
+          ...messages
+        ],
+        model: backupModel,
+        temperature: 1,
+        max_tokens: 1024,
+        top_p: 1,
+        stream: false,
+      });
+      return backupCompletion.choices[0]?.message?.content || 'Backup Assistant: No response generated.';
+    } catch (backupError) {
+      console.error('Error with backup API:', backupError.message);
+      throw new Error('Backup Assistant also failed.');
+    }
+  };
 
+  const validateResponse = (output) => {
+    return output && output.trim() !== ''; // Ensures non-empty and meaningful content
+  };
+
+  try {
     if (model && model.startsWith('gemini')) {
       const geminiModel = genAI.getGenerativeModel({ model });
       const prompt = messages.map(msg => msg.content).join('\n');
       const result = await geminiModel.generateContent(prompt);
-      response = result.response.text();
+      const geminiResponse = result.response?.text();
+
+      // Validate Gemini response
+      if (!validateResponse(geminiResponse)) {
+        throw new Error('Gemini model produced an invalid or empty response.');
+      }
+
+      response = geminiResponse;
     } else if (model && model.startsWith('gpt')) {
       const result = await openAIClient.chat.completions.create({
         messages: messages,
@@ -58,9 +88,16 @@ app.post('/api/chat', async (req, res) => {
         max_tokens: 1000,
         model: model
       });
-      response = result.choices[0]?.message?.content || 'No response generated.';
-    }else {
-      // Otherwise, will use Groq as usual
+      const gptResponse = result.choices[0]?.message?.content;
+
+      // Validate GPT response
+      if (!validateResponse(gptResponse)) {
+        throw new Error('GPT model produced an invalid or empty response.');
+      }
+
+      response = gptResponse;
+    } else {
+      // Use Groq by default
       const chatCompletion = await groqClient.chat.completions.create({
         messages,
         model,
@@ -69,33 +106,32 @@ app.post('/api/chat', async (req, res) => {
         top_p: 1,
         stream: false,
       });
-      response = chatCompletion.choices[0]?.message?.content || 'No response generated.';
+      const groqResponse = chatCompletion.choices[0]?.message?.content;
+
+      // Validate Groq response
+      if (!validateResponse(groqResponse)) {
+        throw new Error('Groq model produced an invalid or empty response.');
+      }
+
+      response = groqResponse;
     }
 
+    // Send response if valid
     res.json({ response });
   } catch (error) {
-    console.error('Error communicating with APIs:', error.message);
-    try{
-      const chatCompletion = await groqClient2.chat.completions.create({
-        messages: [
-          { role: "system", content: "You are a Backup Assistant, activated because the LLM the user was trying to access is currently busy. Your task is to assist the user in completing their respective tasks. Make sure to acknowledge your role at the beginning of each response and continue to help them efficiently." },
-          ...messages 
-        ],
-        model: backupModel,
-        temperature: 1,
-        max_tokens: 1024,
-        top_p: 1,
-        stream: false,
-      });
-      response = chatCompletion.choices[0]?.message?.content || 'No response generated.';
+    console.error('Primary model error:', error.message);
+
+    try {
+      // Invoke the backup assistant
+      response = await invokeBackupAssistant();
       res.json({ response });
-    }
-    catch(error){
-      console.error('Error with backup API:', error.message);
-      res.status(500).json({ error: 'Failed to fetch response from both primary and backup APIs.' });
+    } catch (backupError) {
+      console.error('Backup model error:', backupError.message);
+      res.status(500).json({ error: 'Both primary and backup models failed.' });
     }
   }
 });
+
 
 app.listen(3000, () => {
   console.log(`Server is running `);
