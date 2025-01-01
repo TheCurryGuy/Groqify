@@ -68,7 +68,7 @@ app.post('/api/chat', async (req, res) => {
       const chatCompletion = await hfclient.chatCompletion({
         model: "Qwen/Qwen2.5-Coder-32B-Instruct",
         messages,
-        max_tokens: 2048
+        max_tokens: 500
       });
       response = chatCompletion.choices[0]?.message?.content || 'No response generated.';
     } else {
