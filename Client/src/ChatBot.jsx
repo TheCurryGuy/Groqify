@@ -28,6 +28,7 @@ const Chatbot = () => {
     'Mixtral-8x7b-32768',
     'Llama3-70b-8192',
     'Llama3-8b-8192',
+    'Qwen2.5-Coder-32B-Instruct',
     'gpt-4o-mini',
     'gpt-4o',
     'gemma2-9b-it',
