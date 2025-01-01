@@ -395,8 +395,8 @@ button:hover {
   
     .input-container {
         flex-direction: column;
-        margin-left: 2vw;
-        width: 90%;
+        width: 96%;
+        border: none;
         gap: 5px;
         padding: 8px;
         border: none;
