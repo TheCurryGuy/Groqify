@@ -34,7 +34,7 @@ const Chatbot = () => {
     'gemma2-9b-it',
     'gemini-1.5-flash',
     'gemini-1.5-flash-8b',
-    'gemini-1.5-pro-latest'
+    'gemini-1.5-pro'
   ];
 
   const HistoryRemover = () => {
