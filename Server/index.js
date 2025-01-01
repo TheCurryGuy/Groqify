@@ -75,25 +75,7 @@ app.post('/api/chat', async (req, res) => {
     res.json({ response });
   } catch (error) {
     console.error('Error communicating with APIs:', error.message);
-    try{
-      const result = await groqClient2.chat.completions.create({
-        messages: [
-          { role: "system", content: "You are a Backup Assistant, activated because the LLM the user was trying to access is currently busy. Your task is to assist the user in completing their respective tasks. Make sure to acknowledge your role at the beginning of each response and continue to help them efficiently." },
-          ...messages 
-        ],
-        model: backupModel,
-        temperature: 1,
-        max_tokens: 1024,
-        top_p: 1,
-        stream: false,
-      });
-      response = result.choices[0]?.message?.content || 'No response generated.';
-      res.json({ response });
-    }
-    catch(error){
-      console.error('Error with backup API:', error.message);
-      res.status(500).json({ error: 'Failed to fetch response from both primary and backup APIs.' });
-    }
+    res.status(500).json({ error: 'Failed to fetch response from primary APIs.' });
   }
 });
 
@@ -104,7 +86,7 @@ app.post('/api/chat/v2', async (req, res) => {
   try{
     const result = await groqClient2.chat.completions.create({
       messages: [
-        { role: "system", content: "You are a Backup Assistant - TheCurryGuy please mention it as a HEADING of your response also please let the user know their chosen model failed to generate , hence you are activated because the LLM the user was trying to access is currently unreachable. Your task is to assist the user in completing their respective tasks. Make sure to acknowledge your role at the beginning of each response and continue to help them efficiently." },
+        { role: "system", content: "You are a Backup Assistant - Of TheCurryGuy please mention it as a HEADING of your response also please let the user know their chosen model failed to generate , hence you are activated because the LLM the user was trying to access is currently unreachable. Your task is to assist the user in completing their respective tasks. Make sure to acknowledge your role at the beginning of each response and continue to help them efficiently." },
         ...messages 
       ],
       model: backupModel,

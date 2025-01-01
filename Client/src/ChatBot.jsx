@@ -105,7 +105,18 @@ const Chatbot = () => {
         });
         const botResponse = res.data.response;
         setMessages([...newMessages, { type: 'bot', text: botResponse }]);
-      }catch(error){
+        setHistory((prevHistory) => {
+          const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
+          const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
+        
+          try {
+            localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
+          } catch (error) {
+            console.error('Failed to save history to localStorage:', error);
+          }
+          return trimmedHistory;
+        });
+      } catch(error) {
         console.error('Error fetching response:', error);
         setMessages([
           ...newMessages,
