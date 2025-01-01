@@ -10,6 +10,35 @@
     --button-toggle: #6B9080;
     --button-toggle-hover: #95a495;
 }
+.sidebar::-webkit-scrollbar {
+    width: 1vw; 
+    border-left: 1px solid var(--text-color-dark);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--bg-color-darker); 
+    border-radius: 5px; 
+
+}
+
+.sidebar::-webkit-scrollbar-track {
+    border-radius: 5px; 
+}
+
+.chat-box::-webkit-scrollbar {
+    width: 1vw;
+    border: 1px solid var(--text-color-dark);
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    background-color: var(--bg-color-medium); 
+    border-radius: 5px; 
+    border: 1px solid var(--text-color-dark);
+}
+
+.chat-box::-webkit-scrollbar-track {
+    border-radius: 5px; 
+}
 
 .chat-container {
     display: flex;
@@ -113,6 +142,10 @@ body{
     cursor: pointer;
     text-align: left;
     border-radius: 4px;
+    overflow: hidden;            
+    text-overflow: ellipsis;      
+    white-space: nowrap;          
+    max-width: 350px;
 }
 
 .history-button:hover {
@@ -417,6 +450,13 @@ button:hover {
     }
     pre{
         width: 90%;
+        font-size: 0.6rem;
+    }
+    pre code{
+        font-size: 0.6rem;
+    }
+    .chat-box::-webkit-scrollbar-thumb {
+        border: none;
     }
 }
   
