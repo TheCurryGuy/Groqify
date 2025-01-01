@@ -60,7 +60,7 @@ app.post('/api/chat', async (req, res) => {
         messages: messages,
         temperature: 1.0,
         top_p: 1.0,
-        max_tokens: 1000,
+        max_tokens: 1024,
         model: model
       });
       response = result.choices[0]?.message?.content || 'No response generated.';
@@ -68,7 +68,7 @@ app.post('/api/chat', async (req, res) => {
       const chatCompletion = await hfclient.chatCompletion({
         model: "Qwen/Qwen2.5-Coder-32B-Instruct",
         messages,
-        max_tokens: 1024
+        max_tokens: 2048
       });
       response = chatCompletion.choices[0]?.message?.content || 'No response generated.';
     } else {
@@ -103,7 +103,7 @@ app.post('/api/chat/v2', async (req, res) => {
       ],
       model: backupModel,
       temperature: 1,
-      max_tokens: 1024,
+      max_tokens: 2048,
       top_p: 1,
       stream: false,
     });
