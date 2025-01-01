@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const { Groq } = require('groq-sdk'); 
 const { GoogleGenerativeAI } = require('@google/generative-ai'); 
 const OpenAI = require('openai');
+const { HfInference } = require("@huggingface/inference");
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY; 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const BACKUP_API_KEY = process.env.BACKUP_API_KEY;
+const HF_API_KEY = process.env.HF_API_KEY;
 
 app.use(express.json());
 app.use(cors({
@@ -31,6 +33,9 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const token = OPENAI_API_KEY; // Fetch OpenAI API key from environment
 const endpoint = "https://models.inference.ai.azure.com";
 const openAIClient = new OpenAI({ baseURL: endpoint, apiKey: token });
+
+//hfclient
+const hfclient = new HfInference(HF_API_KEY);
 
 app.get("/", (req, res) => {
 
@@ -59,7 +64,14 @@ app.post('/api/chat', async (req, res) => {
         model: model
       });
       response = result.choices[0]?.message?.content || 'No response generated.';
-    }else {
+    } else if(model === 'Qwen2.5-Coder-32B-Instruct'){
+      const chatCompletion = await hfclient.chatCompletion({
+        model: "Qwen/Qwen2.5-Coder-32B-Instruct",
+        messages,
+        max_tokens: 1024
+      });
+      response = chatCompletion.choices[0]?.message?.content || 'No response generated.';
+    } else {
       // Otherwise, will use Groq as usual
       const result = await groqClient.chat.completions.create({
         messages,
