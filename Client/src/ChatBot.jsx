@@ -85,11 +85,33 @@ const Chatbot = () => {
       });
       
     } catch (error) {
-      console.error('Error fetching response:', error);
-      setMessages([
-        ...newMessages,
-        { type: 'bot', text: 'An error occurred. Please try again.' },
-      ]);
+      console.log("Error fetching Primary Model, trying Backup Route");
+      try{
+        //backup routing
+        const recentHistory = history.slice(-1).flatMap((entry) => [
+          { role: 'user', content: entry.query },
+          { role: 'assistant', content: entry.response },
+        ]);
+    
+        const requestMessages = [
+          { role: 'system', content: systemPrompt },
+          ...recentHistory,
+          { role: 'user', content: userInput },
+        ];
+    
+        const res = await axios.post('https://groqify-server.vercel.app/api/chat/v2', {
+          messages: requestMessages,
+          model: selectedModel,
+        });
+        const botResponse = res.data.response;
+        setMessages([...newMessages, { type: 'bot', text: botResponse }]);
+      }catch(error){
+        console.error('Error fetching response:', error);
+        setMessages([
+          ...newMessages,
+          { type: 'bot', text: 'An error occurred. Please try again.' },
+        ]);
+      }
     } finally {
       setIsLoading(false);
     }
