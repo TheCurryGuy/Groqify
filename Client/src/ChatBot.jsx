@@ -109,7 +109,7 @@ const Chatbot = () => {
         console.error('Error fetching response:', error);
         setMessages([
           ...newMessages,
-          { type: 'bot', text: 'An error occurred. Please try again.' },
+          { type: 'bot', text: 'An error occurred, Both Primary & Backup Models failed, Please try again later...' },
         ]);
       }
     } finally {
