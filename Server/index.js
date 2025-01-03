@@ -102,7 +102,7 @@ app.post('/api/chat/v2', async (req, res) => {
         ...messages 
       ],
       model: backupModel,
-      temperature: 1,
+      temperature: 1.5,
       max_tokens: 2048,
       top_p: 1,
       stream: false,
