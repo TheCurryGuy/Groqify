@@ -43,6 +43,7 @@ const Chatbot = () => {
     setMessages([]);
   }
 
+    //New modified function avoiding duplications
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
   
@@ -51,73 +52,52 @@ const Chatbot = () => {
     setUserInput('');
     setIsLoading(true);
   
-    try {
-      const recentHistory = history.slice(-1).flatMap((entry) => [
-        { role: 'user', content: entry.query },
-        { role: 'assistant', content: entry.response },
-      ]);
+    const recentHistory = history.slice(-1).flatMap((entry) => [
+      { role: 'user', content: entry.query },
+      { role: 'assistant', content: entry.response },
+    ]);
   
-      const requestMessages = [
-        { role: 'system', content: systemPrompt },
-        ...recentHistory,
-        { role: 'user', content: userInput },
-      ];
+    const createRequestMessages = () => [
+      { role: 'system', content: systemPrompt },
+      ...recentHistory,
+      { role: 'user', content: userInput },
+    ];
   
-      const res = await axios.post('https://groqify-server.vercel.app/api/chat', {
-        messages: requestMessages,
-        model: selectedModel,
-      });
-  
-      const botResponse = res.data.response;
-  
-      setMessages([...newMessages, { type: 'bot', text: botResponse }]);
-  
+    const updateHistory = (userInput, botResponse) => {
       setHistory((prevHistory) => {
         const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
         const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
-      
+  
         try {
-          localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
+          localStorage.setItem('chatHistory', JSON.stringify(trimmedHistory));
         } catch (error) {
           console.error('Failed to save history to localStorage:', error);
         }
-      
+  
         return trimmedHistory;
       });
-      
+    };
+  
+    const fetchResponse = async (url) => {
+      const requestMessages = createRequestMessages();
+      const res = await axios.post(url, {
+        messages: requestMessages,
+        model: selectedModel,
+      });
+      return res.data.response;
+    };
+    
+    try {
+      const botResponse = await fetchResponse('https://groqify-server.vercel.app/api/chat');
+      setMessages([...newMessages, { type: 'bot', text: botResponse }]);
+      updateHistory(userInput, botResponse);
     } catch (error) {
       console.log("Error fetching Primary Model, trying Backup Route");
-      try{
-        //backup routing
-        const recentHistory = history.slice(-1).flatMap((entry) => [
-          { role: 'user', content: entry.query },
-          { role: 'assistant', content: entry.response },
-        ]);
-    
-        const requestMessages = [
-          { role: 'system', content: systemPrompt },
-          ...recentHistory,
-          { role: 'user', content: userInput },
-        ];
-    
-        const res = await axios.post('https://groqify-server.vercel.app/api/chat/v2', {
-          messages: requestMessages,
-          model: selectedModel,
-        });
-        const botResponse = res.data.response;
+      try {
+        const botResponse = await fetchResponse('https://groqify-server.vercel.app/api/chat/v2');
         setMessages([...newMessages, { type: 'bot', text: botResponse }]);
-        setHistory((prevHistory) => {
-          const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
-          const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
-        
-          try {
-            localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
-          } catch (error) {
-            console.error('Failed to save history to localStorage:', error);
-          }
-          return trimmedHistory;
-        });
-      } catch(error) {
+        updateHistory(userInput, botResponse);
+      } catch (error) {
         console.error('Error fetching response:', error);
         setMessages([
           ...newMessages,
@@ -128,6 +108,93 @@ const Chatbot = () => {
       setIsLoading(false);
     }
   };
+    
+              //OLD Function, with duplications 
+  // const handleSendMessage = async () => {
+  //   if (!userInput.trim()) return;
+  
+  //   const newMessages = [...messages, { type: 'user', text: userInput }];
+  //   setMessages(newMessages);
+  //   setUserInput('');
+  //   setIsLoading(true);
+  
+  //   try {
+  //     const recentHistory = history.slice(-1).flatMap((entry) => [
+  //       { role: 'user', content: entry.query },
+  //       { role: 'assistant', content: entry.response },
+  //     ]);
+  
+  //     const requestMessages = [
+  //       { role: 'system', content: systemPrompt },
+  //       ...recentHistory,
+  //       { role: 'user', content: userInput },
+  //     ];
+  
+  //     const res = await axios.post('https://groqify-server.vercel.app/api/chat', {
+  //       messages: requestMessages,
+  //       model: selectedModel,
+  //     });
+  
+  //     const botResponse = res.data.response;
+  
+  //     setMessages([...newMessages, { type: 'bot', text: botResponse }]);
+  
+  //     setHistory((prevHistory) => {
+  //       const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
+  //       const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
+      
+  //       try {
+  //         localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
+  //       } catch (error) {
+  //         console.error('Failed to save history to localStorage:', error);
+  //       }
+      
+  //       return trimmedHistory;
+  //     });
+      
+  //   } catch (error) {
+  //     console.log("Error fetching Primary Model, trying Backup Route");
+  //     try{
+  //       //backup routing
+  //       const recentHistory = history.slice(-1).flatMap((entry) => [
+  //         { role: 'user', content: entry.query },
+  //         { role: 'assistant', content: entry.response },
+  //       ]);
+    
+  //       const requestMessages = [
+  //         { role: 'system', content: systemPrompt },
+  //         ...recentHistory,
+  //         { role: 'user', content: userInput },
+  //       ];
+    
+  //       const res = await axios.post('https://groqify-server.vercel.app/api/chat/v2', {
+  //         messages: requestMessages,
+  //         model: selectedModel,
+  //       });
+  //       const botResponse = res.data.response;
+  //       setMessages([...newMessages, { type: 'bot', text: botResponse }]);
+  //       setHistory((prevHistory) => {
+  //         const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
+  //         const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
+        
+  //         try {
+  //           localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
+  //         } catch (error) {
+  //           console.error('Failed to save history to localStorage:', error);
+  //         }
+  //         return trimmedHistory;
+  //       });
+  //     } catch(error) {
+  //       console.error('Error fetching response:', error);
+  //       setMessages([
+  //         ...newMessages,
+  //         { type: 'bot', text: 'An error occurred, Both Primary & Backup Models failed, Please try again later...' },
+  //       ]);
+  //     }
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   
 
   const handleHistoryClick = (entry) => {
