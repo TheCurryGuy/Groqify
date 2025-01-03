@@ -209,22 +209,27 @@ const Chatbot = () => {
   };
 
   const handleCopyCode = (text) => {
-    const codeMatches = text.match(/```([\s\S]*?)```/g); 
-    if (codeMatches) {
-      const allCodes = codeMatches.map(codeBlock => codeBlock.replace(/```/g, '')).join('\n\n');
-      navigator.clipboard.writeText(allCodes).then(() => {
-        alert('Code copied to clipboard!');
-      }).catch((err) => {
-        console.error('Failed to copy code: ', err);
-      });
-    } else {
-      navigator.clipboard.writeText(text).then(() => {
-        alert('Text copied to clipboard!');
-      }).catch((err) => {
-        console.error('Failed to copy text: ', err);
-      });
-    }
+    const extractCodeBlocks = (text) => {
+      const codeBlockRegex = /```(\w+)?[\s\S]*?```/g; // Matches code blocks with optional language identifiers
+      const codeMatches = [...text.matchAll(codeBlockRegex)];
+      return codeMatches.length
+        ? codeMatches.map(match => {
+            const codeContent = match[0].replace(/```(\w+)?/g, '').replace(/```/g, '').trim();
+            return codeContent;
+          }).join('\n\n')
+        : text;
+    };
+  
+    const copyToClipboard = (content) => {
+      navigator.clipboard.writeText(content)
+        .then(() => alert('Content copied to clipboard!'))
+        .catch((err) => console.error('Failed to copy content: ', err));
+    };
+  
+    const contentToCopy = extractCodeBlocks(text);
+    copyToClipboard(contentToCopy);
   };
+  
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
