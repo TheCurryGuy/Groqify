@@ -208,35 +208,23 @@ const Chatbot = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleCopyCode = (text) => { //GPT generated advanced logic 
-    const extractCodeBlocks = (text) => {
-      const codeBlockRegex = /```[\s\S]*?```/g; 
-      const codeMatches = [...text.matchAll(codeBlockRegex)];
-      return codeMatches.length
-        ? codeMatches.map(match => {
-            const codeContent = match[0]
-              .replace(/^```(\w+)?\n?/, '') 
-              .replace(/```$/, '') 
-              .trim(); 
-            return codeContent;
-          }).join('\n\n') 
-        : '';
-    };
-  
-    const copyToClipboard = (content) => {
-      if (!content) {
-        alert('No code blocks found to copy!');
-        return;
+  const handleCopyCode = async (text) => {
+    try {
+      const codeMatches = text.match(/```([\s\S]*?)```/g);
+      if (codeMatches) {
+        const allCodes = codeMatches
+          .map(codeBlock => codeBlock.replace(/```/g, ''))
+          .join('\n\n');
+        await navigator.clipboard.writeText(allCodes);
+        alert('Code copied to clipboard!');
+      } else {
+        await navigator.clipboard.writeText(text);
+        alert('Text copied to clipboard!');
       }
-      navigator.clipboard.writeText(content)
-        .then(() => alert('Code blocks copied to clipboard!'))
-        .catch((err) => console.error('Failed to copy content: ', err));
-    };
-  
-    const contentToCopy = extractCodeBlocks(text);
-    copyToClipboard(contentToCopy);
-  };
-  
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };  
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
