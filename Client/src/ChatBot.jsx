@@ -208,21 +208,28 @@ const Chatbot = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleCopyCode = (text) => {
+  const handleCopyCode = (text) => { //GPT generated advanced logic 
     const extractCodeBlocks = (text) => {
-      const codeBlockRegex = /```(\w+)?[\s\S]*?```/g; // Matches code blocks with optional language identifiers
+      const codeBlockRegex = /```[\s\S]*?```/g; 
       const codeMatches = [...text.matchAll(codeBlockRegex)];
       return codeMatches.length
         ? codeMatches.map(match => {
-            const codeContent = match[0].replace(/```(\w+)?/g, '').replace(/```/g, '').trim();
+            const codeContent = match[0]
+              .replace(/^```(\w+)?\n?/, '') 
+              .replace(/```$/, '') 
+              .trim(); 
             return codeContent;
-          }).join('\n\n')
-        : text;
+          }).join('\n\n') 
+        : '';
     };
   
     const copyToClipboard = (content) => {
+      if (!content) {
+        alert('No code blocks found to copy!');
+        return;
+      }
       navigator.clipboard.writeText(content)
-        .then(() => alert('Content copied to clipboard!'))
+        .then(() => alert('Code blocks copied to clipboard!'))
         .catch((err) => console.error('Failed to copy content: ', err));
     };
   
