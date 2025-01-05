@@ -76,9 +76,7 @@ Client/
 ├── public/             # Public assets  
 ├── src/  
 │   ├── components/     # Reusable React components  
-│   ├── pages/          # Page-specific components  
-│   ├── utils/          # Utility functions  
-│   ├── styles/         # CSS/SCSS files  
+│   ├── pages/          # Page-specific components   
 │   ├── App.js          # Main app component  
 │   ├── index.js        # Entry point  
 ├── package.json        # Dependencies and scripts  
