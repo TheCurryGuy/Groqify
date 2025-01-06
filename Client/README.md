@@ -7,16 +7,13 @@ Welcome to the **Groqify Client** repository! This is the frontend application f
 
 1. [Project Overview](#project-overview)  
 2. [Features](#features)  
-3. [Technologies Used](#technologies-used)  
-4. [Getting Started](#getting-started)  
-5. [Folder Structure](#folder-structure)  
-6. [Contribution Guidelines](#contribution-guidelines)  
-7. [License](#license)  
+3. [Folder Structure](#folder-structure)  
+4. [Contribution Guidelines](#contribution-guidelines)  
+5. [License](#license)  
 
 ## Project Overview  
 
-Groqify is a platform designed to [insert high-level description, e.g., "connect users with curated content based on their preferences"].  
-This client application serves as the user interface to interact with the backend APIs and services.  
+A lightning-fast chatbot powered by Groq, Google GenAI, and the latest cutting-edge models from GitHub Models and Hugging Face. Designed for performance and efficiency, Groqify delivers a seamless conversational experience.
 
 ## Features  
 
@@ -24,16 +21,6 @@ This client application serves as the user interface to interact with the backen
 - **Component-Based Architecture**: Built with React for modularity and reusability.  
 - **API Integration**: Connects seamlessly with Groqify's backend services.  
 - **Custom Features**: Includes personalized [features relevant to the app].  
-
-## Technologies Used  
-
-- **React.js**: Frontend library for building UI components.  
-- **Axios**: For API requests and data handling.  
-- **CSS/SCSS**: Styling for a clean and responsive design.  
-- **React Router**: For client-side routing and navigation.  
-- **Context API**: For state management across the application.  
-
-## Getting Started  
 
 ### Prerequisites  
 
@@ -56,31 +43,25 @@ Ensure you have the following installed on your machine:
 
 3. Start the development server:  
    ```bash  
-   npm start  
+   npm run dev 
    ```  
 
-4. Access the application in your browser at `http://localhost:3000`.  
+4. Access the application in your browser at `http://localhost:5173`.  
 
-### Environment Variables  
-
-Ensure the following environment variables are configured in a `.env` file at the root of the `Client` folder:  
-```env  
-REACT_APP_API_BASE_URL=http://your-backend-api-url  
-REACT_APP_OTHER_VARIABLE=value  
-```  
+### Environment Variables    
 
 ## Folder Structure  
 
 ```
 Client/  
-├── public/             # Public assets  
-├── src/  
-│   ├── components/     # Reusable React components  
-│   ├── pages/          # Page-specific components   
-│   ├── App.js          # Main app component  
-│   ├── index.js        # Entry point  
-├── package.json        # Dependencies and scripts  
-├── .env                # Environment variables  
+├── public/           
+│   ├── assets/    
+│   ├── Chat.css          
+│   ├── ChatBot.jsx         
+│   ├── main.jsx        
+├── index.html
+├── package-lock.json
+├── package.json        
 ```  
 
 ## Contribution Guidelines  
