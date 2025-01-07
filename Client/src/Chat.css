@@ -18,7 +18,6 @@
 .sidebar::-webkit-scrollbar-thumb {
     background-color: var(--bg-color-medium);
     border-radius: 5px; 
-    border: 1px solid var(--text-color-dark);
 
 }
 
