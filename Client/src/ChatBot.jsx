@@ -54,8 +54,10 @@ const Chatbot = () => {
       try {
         const text = await pdfToText(file);
         setFileContent(text); // Set the extracted text to state
+        alert("File loaded successfully!")
       } catch (error) {
         console.error("Failed to extract text from PDF", error);
+        setFileContent('');
         alert('Error extracting text from PDF.');
       }
     } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
@@ -64,9 +66,11 @@ const Chatbot = () => {
       mammoth.extractRawText({ arrayBuffer })
         .then((result) => {
           setFileContent(result.value);
+          alert("File loaded successfully!")
         })
         .catch((error) => {
           alert('Error parsing DOCX file');
+          setFileContent('');
         });
     } else {
       alert('Unsupported file format. Only PDF and DOCX are supported.');
