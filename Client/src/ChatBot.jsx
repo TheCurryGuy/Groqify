@@ -74,6 +74,7 @@ const Chatbot = () => {
         });
     } else {
       alert('Unsupported file format. Only PDF and DOCX are supported.');
+      setFileContent('');
     }
   };
     //New modified function avoiding duplications
