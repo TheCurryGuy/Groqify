@@ -136,6 +136,7 @@ const Chatbot = () => {
       }
     } finally {
       setIsLoading(false);
+      setFileContent('');
     }
   };
     
