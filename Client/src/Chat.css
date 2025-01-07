@@ -16,7 +16,7 @@
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background-color: var(--bg-color-darker); 
+    background-color: var(--bg-color-medium);
     border-radius: 5px; 
 
 }
@@ -272,6 +272,7 @@ button {
 }
 .file-upload-icon{
     margin-top: 0.7rem;
+    cursor: pointer;
 }
 
 pre {
