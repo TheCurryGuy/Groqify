@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown'; 
 import './Chat.css';
-import { FaMoon, FaSun } from 'react-icons/fa';
+import mammoth from 'mammoth';
+import { FaMoon, FaSun, FaPaperclip } from 'react-icons/fa';
+import pdfToText from 'react-pdftotext';
 
 const Chatbot = () => {
   const [userInput, setUserInput] = useState('');
@@ -12,6 +14,7 @@ const Chatbot = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
+  const [fileContent, setFileContent] = useState('');
   const [history, setHistory] = useState(() => {
     try {
       const savedHistory = localStorage.getItem('chatHistory');
@@ -42,7 +45,33 @@ const Chatbot = () => {
     setHistory([]);
     setMessages([]);
   }
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
+    if (file.type === 'application/pdf') {
+      // PDF Parsing using react-pdftotext
+      try {
+        const text = await pdfToText(file);
+        setFileContent(text); // Set the extracted text to state
+      } catch (error) {
+        console.error("Failed to extract text from PDF", error);
+        alert('Error extracting text from PDF.');
+      }
+    } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      // DOCX Parsing using mammoth
+      const arrayBuffer = await file.arrayBuffer();
+      mammoth.extractRawText({ arrayBuffer })
+        .then((result) => {
+          setFileContent(result.value);
+        })
+        .catch((error) => {
+          alert('Error parsing DOCX file');
+        });
+    } else {
+      alert('Unsupported file format. Only PDF and DOCX are supported.');
+    }
+  };
     //New modified function avoiding duplications
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
@@ -51,7 +80,8 @@ const Chatbot = () => {
     setMessages(newMessages);
     setUserInput('');
     setIsLoading(true);
-  
+    const combined = userInput + '\n' + fileContent;
+
     const recentHistory = history.slice(-1).flatMap((entry) => [
       { role: 'user', content: entry.query },
       { role: 'assistant', content: entry.response },
@@ -60,7 +90,7 @@ const Chatbot = () => {
     const createRequestMessages = () => [
       { role: 'system', content: systemPrompt },
       ...recentHistory,
-      { role: 'user', content: userInput },
+      { role: 'user', content: combined },
     ];
   
     const updateHistory = (userInput, botResponse) => {
@@ -363,9 +393,22 @@ const Chatbot = () => {
               if (e.key === 'Enter') handleSendMessage();
             }}
           />
-          <button onClick={handleSendMessage} disabled={!userInput.trim()}>
-            Submit
-          </button>
+          <div className='input-btnt'>
+            <label className="file-upload-icon">
+            <FaPaperclip />
+            <input
+              id="file-upload"
+              type="file"
+              accept=".pdf,.docx"
+              onChange={handleFileUpload}
+              style={{ display: 'none' }}
+            />
+            </label>
+            
+            <button className="send-button" onClick={handleSendMessage}>
+              Send
+            </button>
+          </div>
         </div>
       </div>
     </div>
