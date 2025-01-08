@@ -77,6 +77,72 @@ const Chatbot = () => {
       setFileContent('');
     }
   };
+  // Hi there WORKING ON A NEW HANDLER HEAR THAT USES SANITY for image understanding purposes
+  // const handleFileUpload = async (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
+
+  //   if (file.type === 'application/pdf') {
+    
+  //     try {
+  //       const text = await pdfToText(file);
+  //       setFileContent(text); 
+  //       alert("File loaded successfully!")
+  //     } catch (error) {
+  //       console.error("Failed to extract text from PDF", error);
+  //       setFileContent('');
+  //       alert('Error extracting text from PDF.');
+  //     }
+  //   } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      
+  //     const arrayBuffer = await file.arrayBuffer();
+  //     mammoth.extractRawText({ arrayBuffer })
+  //       .then((result) => {
+  //         setFileContent(result.value);
+  //         alert("File loaded successfully!")
+  //       })
+  //       .catch((error) => {
+  //         alert('Error parsing DOCX file');
+  //         setFileContent('');
+  //       });
+  //   } else if (
+  //     file.type === 'image/jpeg' ||
+  //     file.type === 'image/jpg' ||
+  //     file.type === 'image/png'
+  //   ) {
+      
+  //     try {
+  //       const uploadResult = await client.assets.upload('image', file, {
+  //         filename: file.name,
+  //       });
+  
+    
+  //       const imageUrl = uploadResult.url;
+  //       alert('Image Decrypting Started please wait!');
+  //       let msg = "";
+  //       try{
+  //         msg = await axios.post('http://localhost:3000/api/chat/v3', {
+  //           messages: "if you find any texts then tell what's written or if it's something else then describe the image accordingly",
+  //           image_url: imageUrl,
+  //         });
+    
+  //         text = msg.data.response;
+  //         setFileContent(text);
+  //       } catch(error){
+  //         console.error("error decrypting image_url", error);
+  //         setFileContent('');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error uploading image to Sanity', error);
+  //       alert('Error uploading image.');
+  //       setFileContent('');
+  //     }
+  //   } else {
+  //     alert('Unsupported file format. Only PDF and DOCX and image formats (JPG, JPEG, PNG) are supported.');
+  //     setFileContent('');
+  //   }
+  // };
+  
     //New modified function avoiding duplications
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
