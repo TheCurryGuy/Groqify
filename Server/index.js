@@ -127,6 +127,44 @@ app.post('/api/chat/v2', async (req, res) => {
     }
 });
 
+app.post('/api/chat/v3', async (req, res) => {
+  const { messages, image_url } = req.body;
+  let response = '';
+  try{
+    const result = await groqClient2.chat.completions.create({
+      "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": messages
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": image_url
+            }
+          }
+        ]
+      }
+    ],
+    "model": "llama-3.2-11b-vision-preview",
+    "temperature": 1,
+    "max_tokens": 2048,
+    "top_p": 1,
+    "stream": false,
+    "stop": null
+    });
+    response = result.choices[0]?.message?.content || 'No response generated.';
+    res.json({ response });
+    }
+    catch(error){
+      console.error('Error with backup API:', error.message);
+      res.status(500).json({ error: 'Failed to fetch response from both primary and backup APIs.' });
+    }
+});
+
 app.listen(3000, () => {
   console.log(`Server is running `);
 });

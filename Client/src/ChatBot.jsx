@@ -5,6 +5,7 @@ import './Chat.css';
 import mammoth from 'mammoth';
 import { FaMoon, FaSun, FaPaperclip } from 'react-icons/fa';
 import pdfToText from 'react-pdftotext';
+import client from './sanity';
 
 const Chatbot = () => {
   const [userInput, setUserInput] = useState('');
@@ -14,6 +15,7 @@ const Chatbot = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading_2, setIsLoading_2] = useState(false); 
   const [fileContent, setFileContent] = useState('');
   const [history, setHistory] = useState(() => {
     try {
@@ -45,48 +47,16 @@ const Chatbot = () => {
     setHistory([]);
     setMessages([]);
   }
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    if (file.type === 'application/pdf') {
-      // PDF Parsing using react-pdftotext
-      try {
-        const text = await pdfToText(file);
-        setFileContent(text); // Set the extracted text to state
-        alert("File loaded successfully!")
-      } catch (error) {
-        console.error("Failed to extract text from PDF", error);
-        setFileContent('');
-        alert('Error extracting text from PDF.');
-      }
-    } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-      // DOCX Parsing using mammoth
-      const arrayBuffer = await file.arrayBuffer();
-      mammoth.extractRawText({ arrayBuffer })
-        .then((result) => {
-          setFileContent(result.value);
-          alert("File loaded successfully!")
-        })
-        .catch((error) => {
-          alert('Error parsing DOCX file');
-          setFileContent('');
-        });
-    } else {
-      alert('Unsupported file format. Only PDF and DOCX are supported.');
-      setFileContent('');
-    }
-  };
-  // Hi there WORKING ON A NEW HANDLER HEAR THAT USES SANITY for image understanding purposes
+  // OLD VERSION 
   // const handleFileUpload = async (event) => {
   //   const file = event.target.files[0];
   //   if (!file) return;
 
   //   if (file.type === 'application/pdf') {
-    
+  //     // PDF Parsing using react-pdftotext
   //     try {
   //       const text = await pdfToText(file);
-  //       setFileContent(text); 
+  //       setFileContent(text); // Set the extracted text to state
   //       alert("File loaded successfully!")
   //     } catch (error) {
   //       console.error("Failed to extract text from PDF", error);
@@ -94,7 +64,7 @@ const Chatbot = () => {
   //       alert('Error extracting text from PDF.');
   //     }
   //   } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-      
+  //     // DOCX Parsing using mammoth
   //     const arrayBuffer = await file.arrayBuffer();
   //     mammoth.extractRawText({ arrayBuffer })
   //       .then((result) => {
@@ -105,43 +75,86 @@ const Chatbot = () => {
   //         alert('Error parsing DOCX file');
   //         setFileContent('');
   //       });
-  //   } else if (
-  //     file.type === 'image/jpeg' ||
-  //     file.type === 'image/jpg' ||
-  //     file.type === 'image/png'
-  //   ) {
-      
-  //     try {
-  //       const uploadResult = await client.assets.upload('image', file, {
-  //         filename: file.name,
-  //       });
-  
-    
-  //       const imageUrl = uploadResult.url;
-  //       alert('Image Decrypting Started please wait!');
-  //       let msg = "";
-  //       try{
-  //         msg = await axios.post('http://localhost:3000/api/chat/v3', {
-  //           messages: "if you find any texts then tell what's written or if it's something else then describe the image accordingly",
-  //           image_url: imageUrl,
-  //         });
-    
-  //         text = msg.data.response;
-  //         setFileContent(text);
-  //       } catch(error){
-  //         console.error("error decrypting image_url", error);
-  //         setFileContent('');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error uploading image to Sanity', error);
-  //       alert('Error uploading image.');
-  //       setFileContent('');
-  //     }
   //   } else {
-  //     alert('Unsupported file format. Only PDF and DOCX and image formats (JPG, JPEG, PNG) are supported.');
+  //     alert('Unsupported file format. Only PDF and DOCX are supported.');
   //     setFileContent('');
   //   }
   // };
+  // Hi there below is the NEW HANDLER THAT USES SANITY for image understanding purposes 
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    setIsLoading_2(true);
+
+    if (file.type === 'application/pdf') {
+    
+      try {
+        const text = await pdfToText(file);
+        setFileContent(text); 
+        alert("File loaded successfully!")
+      } catch (error) {
+        console.error("Failed to extract text from PDF", error);
+        setFileContent('');
+        alert('Error extracting text from PDF.');
+      }finally {
+        setIsLoading_2(false);
+      }
+    } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      
+      const arrayBuffer = await file.arrayBuffer();
+      mammoth.extractRawText({ arrayBuffer })
+        .then((result) => {
+          setFileContent(result.value);
+          alert("File loaded successfully!")
+        })
+        .catch((error) => {
+          alert('Error parsing DOCX file');
+          setFileContent('');
+        })
+        .finally(() => {
+          setIsLoading_2(false);
+        });
+    } else if (
+      file.type === 'image/jpeg' ||
+      file.type === 'image/jpg' ||
+      file.type === 'image/png'
+    ) {
+      
+      try {
+        const uploadResult = await client.assets.upload('image', file, {
+          filename: file.name,
+        });
+  
+    
+        const imageUrl = uploadResult.url;
+        alert('Image Decrypting Started please wait!');
+        let msg = "";
+        try{
+          msg = await axios.post('https://groqify-server.vercel.app/api/chat/v3', {
+            messages: "if you find any texts then tell what's written or if it's something else then describe the image accordingly",
+            image_url: imageUrl,
+          });
+    
+          const text = msg.data.response;
+          setFileContent(text);
+        } catch(error){
+          console.error("error decrypting image_url", error);
+          setFileContent('');
+        }
+      } catch (error) {
+        console.error('Error uploading image to Sanity', error);
+        alert('Error uploading image.');
+        setFileContent('');
+      } finally {
+        setIsLoading_2(false);
+        alert("Attachment Uploaded Successfully");
+      }
+    } else {
+      alert('Unsupported file format. Only PDF and DOCX and image formats (JPG, JPEG, PNG) are supported.');
+      setFileContent('');
+      setIsLoading_2(false);
+    }
+  };
   
     //New modified function avoiding duplications
   const handleSendMessage = async () => {
@@ -151,7 +164,7 @@ const Chatbot = () => {
     setMessages(newMessages);
     setUserInput('');
     setIsLoading(true);
-    const combined = userInput + '\n' + fileContent;
+    const combined = userInput + '\n' + (fileContent ? "This is the content of the attached file; help the user with their query regarding it.\n" + fileContent : '');
 
     const recentHistory = history.slice(-1).flatMap((entry) => [
       { role: 'user', content: entry.query },
@@ -210,93 +223,6 @@ const Chatbot = () => {
       setFileContent('');
     }
   };
-    
-              //OLD Function, with duplications 
-  // const handleSendMessage = async () => {
-  //   if (!userInput.trim()) return;
-  
-  //   const newMessages = [...messages, { type: 'user', text: userInput }];
-  //   setMessages(newMessages);
-  //   setUserInput('');
-  //   setIsLoading(true);
-  
-  //   try {
-  //     const recentHistory = history.slice(-1).flatMap((entry) => [
-  //       { role: 'user', content: entry.query },
-  //       { role: 'assistant', content: entry.response },
-  //     ]);
-  
-  //     const requestMessages = [
-  //       { role: 'system', content: systemPrompt },
-  //       ...recentHistory,
-  //       { role: 'user', content: userInput },
-  //     ];
-  
-  //     const res = await axios.post('https://groqify-server.vercel.app/api/chat', {
-  //       messages: requestMessages,
-  //       model: selectedModel,
-  //     });
-  
-  //     const botResponse = res.data.response;
-  
-  //     setMessages([...newMessages, { type: 'bot', text: botResponse }]);
-  
-  //     setHistory((prevHistory) => {
-  //       const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
-  //       const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
-      
-  //       try {
-  //         localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
-  //       } catch (error) {
-  //         console.error('Failed to save history to localStorage:', error);
-  //       }
-      
-  //       return trimmedHistory;
-  //     });
-      
-  //   } catch (error) {
-  //     console.log("Error fetching Primary Model, trying Backup Route");
-  //     try{
-  //       //backup routing
-  //       const recentHistory = history.slice(-1).flatMap((entry) => [
-  //         { role: 'user', content: entry.query },
-  //         { role: 'assistant', content: entry.response },
-  //       ]);
-    
-  //       const requestMessages = [
-  //         { role: 'system', content: systemPrompt },
-  //         ...recentHistory,
-  //         { role: 'user', content: userInput },
-  //       ];
-    
-  //       const res = await axios.post('https://groqify-server.vercel.app/api/chat/v2', {
-  //         messages: requestMessages,
-  //         model: selectedModel,
-  //       });
-  //       const botResponse = res.data.response;
-  //       setMessages([...newMessages, { type: 'bot', text: botResponse }]);
-  //       setHistory((prevHistory) => {
-  //         const updatedHistory = [...prevHistory, { query: userInput, response: botResponse }];
-  //         const trimmedHistory = updatedHistory.length > 10 ? updatedHistory.slice(1) : updatedHistory;
-        
-  //         try {
-  //           localStorage.setItem('chatHistory',JSON.stringify(trimmedHistory));
-  //         } catch (error) {
-  //           console.error('Failed to save history to localStorage:', error);
-  //         }
-  //         return trimmedHistory;
-  //       });
-  //     } catch(error) {
-  //       console.error('Error fetching response:', error);
-  //       setMessages([
-  //         ...newMessages,
-  //         { type: 'bot', text: 'An error occurred, Both Primary & Backup Models failed, Please try again later...' },
-  //       ]);
-  //     }
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   
 
   const handleHistoryClick = (entry) => {
@@ -477,7 +403,7 @@ const Chatbot = () => {
             />
             </label>
             
-            <button className="send-button" onClick={handleSendMessage}>
+            <button disabled={isLoading_2} className="send-button" onClick={handleSendMessage}>
               Send
             </button>
           </div>
