@@ -397,7 +397,7 @@ const Chatbot = () => {
             <input
               id="file-upload"
               type="file"
-              accept=".pdf,.docx"
+              accept=".pdf,.docx,.jpg,.jpeg,.png"
               onChange={handleFileUpload}
               style={{ display: 'none' }}
             />
