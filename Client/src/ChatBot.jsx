@@ -164,7 +164,7 @@ const Chatbot = () => {
     setMessages(newMessages);
     setUserInput('');
     setIsLoading(true);
-    const combined = userInput + '\n' + (fileContent ? "This is the content of the attached file; help the user with their query regarding it.\n" + fileContent : '');
+    const combined = userInput + '\n' + (fileContent ? "This is the content of the attached file; help the user with their query regarding it let him know what the contents are in detail described manner...\n" + fileContent : '');
 
     const recentHistory = history.slice(-1).flatMap((entry) => [
       { role: 'user', content: entry.query },
