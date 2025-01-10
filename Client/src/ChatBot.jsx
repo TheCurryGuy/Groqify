@@ -6,6 +6,12 @@ import mammoth from 'mammoth';
 import { FaMoon, FaSun, FaPaperclip } from 'react-icons/fa';
 import pdfToText from 'react-pdftotext';
 import client from './sanity';
+import remarkMath from 'remark-math';
+import remarkCodeTitles from 'remark-code-titles';
+import rehypeKatex from 'rehype-katex';
+import rehypeHighlight from 'rehype-highlight';
+import 'katex/dist/katex.min.css'; 
+import "highlight.js/styles/atom-one-dark.css";
 
 const Chatbot = () => {
   const [userInput, setUserInput] = useState('');
@@ -368,7 +374,12 @@ const Chatbot = () => {
               <div className="message-text">
                 {message.type === 'bot' ? (
                   <div>
-                    <ReactMarkdown>{message.text}</ReactMarkdown>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkMath, remarkCodeTitles]} 
+                      rehypePlugins={[rehypeKatex, rehypeHighlight]} 
+                    >
+                      {message.text}
+                    </ReactMarkdown>
                     <button className = "copy-btn" onClick={() => handleCopyCode(message.text)}>Copy Response</button>
                   </div>
                 ) : (
