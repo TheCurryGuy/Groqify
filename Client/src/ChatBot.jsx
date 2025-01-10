@@ -8,6 +8,7 @@ import pdfToText from 'react-pdftotext';
 import client from './sanity';
 import remarkMath from 'remark-math';
 import remarkCodeTitles from 'remark-code-titles';
+import remarkGfm from "remark-gfm";
 import rehypeKatex from 'rehype-katex';
 import rehypeHighlight from 'rehype-highlight';
 import 'katex/dist/katex.min.css'; 
@@ -375,7 +376,7 @@ const Chatbot = () => {
                 {message.type === 'bot' ? (
                   <div>
                     <ReactMarkdown
-                      remarkPlugins={[remarkMath, remarkCodeTitles]} 
+                      remarkPlugins={[remarkMath, remarkGfm, remarkCodeTitles]} 
                       rehypePlugins={[rehypeKatex, rehypeHighlight]} 
                     >
                       {message.text}
