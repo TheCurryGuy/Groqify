@@ -88,7 +88,7 @@ app.post('/api/chat', async (req, res) => {
         messages,
         model,
         temperature: 1,
-        max_tokens: 1024,
+        max_tokens: 2048,
         top_p: 1,
         stream: false,
       });
@@ -161,7 +161,7 @@ app.post('/api/chat/v3', async (req, res) => {
     }
     catch(error){
       console.error('Error with backup API:', error.message);
-      res.status(500).json({ error: 'Failed to fetch response from both primary and backup APIs.' });
+      res.status(500).json({ error: 'Failed to fetch response from the image reasoning model' });
     }
 });
 

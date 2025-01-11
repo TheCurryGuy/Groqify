@@ -138,7 +138,7 @@ const Chatbot = () => {
         let msg = "";
         try{
           msg = await axios.post('https://groqify-server.vercel.app/api/chat/v3', {
-            messages: "if you find any texts then tell what's written or if it's something else then describe the image accordingly",
+            messages: "Examine the provided image and respond as follows: If the image contains text, output only the exact text found—without any explanations, context, or extra words. If the image does not contain text, provide a precise and descriptive summary of the visual content or scene. Ensure the response is direct and strictly adheres to this format.",
             image_url: imageUrl,
           });
     
@@ -171,7 +171,7 @@ const Chatbot = () => {
     setMessages(newMessages);
     setUserInput('');
     setIsLoading(true);
-    const combined = userInput + '\n' + (fileContent ? "This is the content of the attached file; help the user with their query regarding it let him know what the contents are in detail described manner...\n" + fileContent : '');
+    const combined = userInput + '\n' + (fileContent ? "The content of the attached file is provided directly below this prompt. Your task is to analyze and use this file content to assist the user with their query in a precise and obedient manner. If the file contains questions and the user asks for solutions, respond by analyzing the content and presenting answers in a strict question-answer-question-answer format without deviating or adding unnecessary commentary. If the file contains a description of a scene or an image, enhance the description by using more vivid and easy-to-understand language, enriching the details to provide a clearer and more engaging response. If the user simply wants to know what is in the file, state the content exactly as it appears, without adding any extra words, explanations, or modifications. Always ensure that your response strictly aligns with the user's query and remains fully accurate to the content provided below this prompt. \n" + fileContent : '');
 
     const recentHistory = history.slice(-1).flatMap((entry) => [
       { role: 'user', content: entry.query },
