@@ -44,10 +44,11 @@ const Chatbot = () => {
     'Qwen2.5-1.5B-Instruct',
     'gpt-4o-mini',
     'gpt-4o',
-    'gemma2-9b-it',
+    'gemini-2.0-flash-exp',
     'gemini-1.5-flash',
     'gemini-1.5-flash-8b',
-    'gemini-1.5-pro'
+    'gemini-1.5-pro',
+    'gemma2-9b-it',
   ];
 
   const HistoryRemover = () => {

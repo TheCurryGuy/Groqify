@@ -28,6 +28,13 @@ const groqClient2 = new Groq({ apiKey: BACKUP_API_KEY });
 
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const generationConfig = {
+  temperature: 1,
+  topP: 1,
+  topK: 40,
+  maxOutputTokens: 3072,
+  responseMimeType: "text/plain",
+};
 
 //gpt
 const token = OPENAI_API_KEY; // Fetch OpenAI API key from environment
@@ -49,11 +56,12 @@ app.post('/api/chat', async (req, res) => {
   let response = '';
 
   try {
-
+    
     if (model && model.startsWith('gemini')) {
       const geminiModel = genAI.getGenerativeModel({ model });
-      const prompt = messages.map(msg => msg.content).join('\n');
-      const result = await geminiModel.generateContent(prompt);
+      const prompt = messages.map(msg => msg.content).join('\n'); // Extract input from messages array
+      const chatSession = geminiModel.startChat({ generationConfig });
+      const result = await chatSession.sendMessage(prompt);
       response = result.response.text();
     } else if (model && model.startsWith('gpt')) {
       const result = await openAIClient.chat.completions.create({
