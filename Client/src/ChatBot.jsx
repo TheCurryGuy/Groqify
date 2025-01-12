@@ -41,7 +41,7 @@ const Chatbot = () => {
     'Llama3-70b-8192',
     'Llama3-8b-8192',
     'Phi-3.5-mini-instruct',
-    'Qwen2.5-3B-Instruct',
+    'Qwen2.5-1.5B-Instruct',
     'gpt-4o-mini',
     'gpt-4o',
     'gemma2-9b-it',

@@ -64,16 +64,24 @@ app.post('/api/chat', async (req, res) => {
         model: model
       });
       response = result.choices[0]?.message?.content || 'No response generated.';
-    } else if(model === 'Qwen2.5-3B-Instruct'){
-      const result = await hfclient.chatCompletion({
-        model: "Qwen/Qwen2.5-3B-Instruct",
+    } else if(model === 'Qwen2.5-1.5B-Instruct'){
+      let out = "";
+      const stream = hfclient.chatCompletionStream({
+        model: "Qwen/Qwen2.5-1.5B-Instruct",
         messages,
-        temperature: 0.7,
-        max_tokens: 2048,
+        temperature: 1,
+        max_tokens: 1024,
         top_p: 0.7
       });
-      response = result.choices[0]?.message?.content || 'No response generated.';
-      
+
+      for await (const chunk of stream) {
+        if (chunk.choices && chunk.choices.length > 0) {
+          const newContent = chunk.choices[0].delta.content;
+          out += newContent;
+        }
+      }
+
+      response = out || 'No response generated.';
     } else if(model === 'Phi-3.5-mini-instruct'){
       let out = "";
       const stream = hfclient.chatCompletionStream({
