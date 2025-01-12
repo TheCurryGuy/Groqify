@@ -60,7 +60,7 @@ app.post('/api/chat', async (req, res) => {
         messages: messages,
         temperature: 1.0,
         top_p: 1.0,
-        max_tokens: 1024,
+        max_tokens: 2048,
         model: model
       });
       response = result.choices[0]?.message?.content || 'No response generated.';
@@ -100,6 +100,15 @@ app.post('/api/chat', async (req, res) => {
       }
 
       response = out || 'No response generated.';
+    } else if (model && model.startsWith('gpt-o1')) {
+      const result = await openAIClient.chat.completions.create({
+        messages: messages,
+        temperature: 1.0,
+        top_p: 1.0,
+        max_tokens: 2048,
+        model: "o1"
+      });
+      response = result.choices[0]?.message?.content || 'No response generated.';
     } else {
       // Otherwise, will use Groq as usual
       const result = await groqClient.chat.completions.create({

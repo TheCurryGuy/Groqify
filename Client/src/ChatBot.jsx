@@ -43,6 +43,7 @@ const Chatbot = () => {
     'Phi-3.5-mini-instruct',
     'Qwen2.5-1.5B-Instruct',
     'gpt-4o-mini',
+    'gpt-o1',
     'gpt-4o',
     'gemma2-9b-it',
     'gemini-1.5-flash',
