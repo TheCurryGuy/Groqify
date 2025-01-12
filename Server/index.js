@@ -82,6 +82,24 @@ app.post('/api/chat', async (req, res) => {
       }
 
       response = out || 'No response generated.';
+    } else if(model === 'Phi-3.5-mini-instruct'){
+      let out = "";
+      const stream = hfclient.chatCompletionStream({
+        model: "microsoft/Phi-3.5-mini-instruct",
+        messages,
+        temperature: 1,
+        max_tokens: 1024,
+        top_p: 0.7
+      });
+
+      for await (const chunk of stream) {
+        if (chunk.choices && chunk.choices.length > 0) {
+          const newContent = chunk.choices[0].delta.content;
+          out += newContent;
+        }
+      }
+
+      response = out || 'No response generated.';
     } else {
       // Otherwise, will use Groq as usual
       const result = await groqClient.chat.completions.create({

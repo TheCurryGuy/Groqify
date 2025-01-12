@@ -40,6 +40,7 @@ const Chatbot = () => {
     'Mixtral-8x7b-32768',
     'Llama3-70b-8192',
     'Llama3-8b-8192',
+    'Phi-3.5-mini-instruct',
     'Qwen2.5-Coder-32B-Instruct',
     'gpt-4o-mini',
     'gpt-4o',
@@ -54,40 +55,7 @@ const Chatbot = () => {
     setHistory([]);
     setMessages([]);
   }
-  // OLD VERSION 
-  // const handleFileUpload = async (event) => {
-  //   const file = event.target.files[0];
-  //   if (!file) return;
-
-  //   if (file.type === 'application/pdf') {
-  //     // PDF Parsing using react-pdftotext
-  //     try {
-  //       const text = await pdfToText(file);
-  //       setFileContent(text); // Set the extracted text to state
-  //       alert("File loaded successfully!")
-  //     } catch (error) {
-  //       console.error("Failed to extract text from PDF", error);
-  //       setFileContent('');
-  //       alert('Error extracting text from PDF.');
-  //     }
-  //   } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-  //     // DOCX Parsing using mammoth
-  //     const arrayBuffer = await file.arrayBuffer();
-  //     mammoth.extractRawText({ arrayBuffer })
-  //       .then((result) => {
-  //         setFileContent(result.value);
-  //         alert("File loaded successfully!")
-  //       })
-  //       .catch((error) => {
-  //         alert('Error parsing DOCX file');
-  //         setFileContent('');
-  //       });
-  //   } else {
-  //     alert('Unsupported file format. Only PDF and DOCX are supported.');
-  //     setFileContent('');
-  //   }
-  // };
-  // Hi there below is the NEW HANDLER THAT USES SANITY for image understanding purposes 
+   //New Version of handleFileUpload
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
