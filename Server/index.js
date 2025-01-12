@@ -64,10 +64,10 @@ app.post('/api/chat', async (req, res) => {
         model: model
       });
       response = result.choices[0]?.message?.content || 'No response generated.';
-    } else if(model === 'Qwen2.5-Coder-32B-Instruct'){
+    } else if(model === 'Qwen2.5-3B-Instruct'){
       let out = "";
       const stream = hfclient.chatCompletionStream({
-        model: "Qwen/Qwen2.5-Coder-32B-Instruct",
+        model: "Qwen/Qwen2.5-3B-Instruct",
         messages,
         temperature: 1,
         max_tokens: 1024,
