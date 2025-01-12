@@ -100,7 +100,7 @@ app.post('/api/chat', async (req, res) => {
       }
 
       response = out || 'No response generated.';
-    } else if (model && model.startsWith('gpt-o1')) {
+    } else if (model === 'gpt-o1') {
       const result = await openAIClient.chat.completions.create({
         messages: messages,
         temperature: 1.0,
