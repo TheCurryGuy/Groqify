@@ -26,12 +26,15 @@ Groqify is equipped with the following state-of-the-art large language models (L
 | **Llama3-70b-8192**          | Specialized in processing mid-sized contexts efficiently with high accuracy. Great for summarization and mid-length document generation. |
 | **Llama3-8b-8192**           | A smaller variant for quick tasks where mid-level context is sufficient. Best used for small to medium-sized text inputs. |
 | **gemma2-9b-it**             | Fine-tuned for Italian language tasks, this model excels in translation, sentiment analysis, and Italian NLP. |
+| **Gemini-2.0-flash-exp** | A high-speed, real-time model from Google's AI, optimized for dynamic tasks and multi-turn conversational accuracy. |
 | **gemini-1.5-flash**         | Powered by Google's Generative AI, optimized for high-speed responses in real-time applications. |
 | **gemini-1.5-pro-latest**    | The latest professional-grade model by Google's Generative AI, ideal for comprehensive NLP tasks and advanced data processing. |
 | **gemini-1.5-flash-8b**      | A balanced model by Google's Generative AI offering fast performance with precision for mid-level tasks. |
 | **GPT-4o**                   | A powerful and versatile model from GitHub Models, capable of handling a wide range of complex tasks with exceptional contextual understanding. |
 | **GPT-4o-mini**              | A lightweight version of GPT-4o, designed for quick responses and efficient performance. |
 | **Qwen2.5-Coder-32B-Instruct** | A specialized model from Hugging Face, fine-tuned for coding, software documentation, and technical writing. |
+| **Phi-3.5-mini-instruct** | A lightweight, instruction-tuned model for quick, task-specific responses, ideal for educational tools and concise content generation. |
+
 
 ## Getting Started
 
