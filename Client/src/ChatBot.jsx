@@ -107,7 +107,7 @@ const Chatbot = () => {
         let msg = "";
         try{
           msg = await axios.post('https://groqify-server.vercel.app/api/chat/v3', {
-            messages: "Examine the provided image and respond as follows: If the image contains text, output only the exact text found—without any explanations, context, or extra words. If the image does not contain text, provide a precise and descriptive summary of the visual content or scene. Ensure the response is direct and strictly adheres to this format.",
+            messages: "Examine the provided image and respond as follows: If the image contains text, output only the exact text found—without any explanations, context, or extra words. If the image does not contain text, provide a precise and descriptive summary of the visual content or scene. Ensure the response is direct and strictly adheres to this format. ",
             image_url: imageUrl,
           });
     
@@ -140,7 +140,7 @@ const Chatbot = () => {
     setMessages(newMessages);
     setUserInput('');
     setIsLoading(true);
-    const combined = userInput + '\n' + (fileContent ? "The content of the attached file is provided directly below this prompt. Your task is to analyze the file content and use it to assist the user with their query in a precise, clear, and engaging manner. If the file contains questions and the user asks for solutions, provide answers in a strict question-answer format, avoiding any unnecessary commentary or restating of the question. If the file contains a description of a scene or an image, enhance the description using vivid, detailed, and easy-to-understand language to make it more engaging and clear, while staying true to the content of the file. If the user asks what is in the file, state the content exactly as it appears, without altering, adding, or explaining it further. Always ensure your response aligns perfectly with the user's query, avoiding any references to this prompt or unnecessary meta-commentary. Focus on delivering precise and relevant answers or descriptions that adhere strictly to the user's needs.\n" + fileContent : '');
+    const combined = userInput + '\n' + (fileContent ? " The content of the attached file is provided directly below this prompt. Your task is to analyze the file content and use it to assist the user with their query in a precise, clear, and engaging manner. If the file contains questions and the user asks for solutions, provide answers in a strict question-answer format, avoiding any unnecessary commentary or restating of the question. If the file contains a description of a scene or an image, enhance the description using vivid, detailed, and easy-to-understand language to make it more engaging and clear, while staying true to the content of the file. If the user asks what is in the file, state the content exactly as it appears, without altering, adding, or explaining it further. Always ensure your response aligns perfectly with the user's query, avoiding any references to this prompt or unnecessary meta-commentary. Focus on delivering precise and relevant answers or descriptions that adhere strictly to the user's needs.\n" + fileContent : '');
 
     const recentHistory = history.slice(-1).flatMap((entry) => [
       { role: 'user', content: entry.query },

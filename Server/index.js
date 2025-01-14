@@ -123,7 +123,7 @@ app.post('/api/chat/v2', async (req, res) => {
   try{
     const result = await groqClient2.chat.completions.create({
       messages: [
-        { role: "system", content: "You are a Backup Assistant - Of TheCurryGuy please mention it as a HEADING of your response also please let the user know their chosen model failed to generate , hence you are activated because the LLM the user was trying to access is currently unreachable. Your task is to assist the user in completing their respective tasks. Make sure to acknowledge your role at the beginning of each response and continue to help them efficiently." },
+        { role: "system", content: "You are a Backup Assistant - Of TheCurryGuy please mention it as a HEADING of your response also please let the user know their chosen model failed to generate , hence you are activated because the LLM the user was trying to access is currently unreachable. Your task is to assist the user in completing their respective tasks. Make sure to acknowledge your role at the beginning of each response and continue to help them efficiently. " },
         ...messages 
       ],
       model: backupModel,
