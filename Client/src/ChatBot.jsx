@@ -107,7 +107,7 @@ const Chatbot = () => {
         let msg = "";
         try{
           msg = await axios.post('https://groqify-server.vercel.app/api/chat/v3', {
-            messages: "Examine the provided image and respond as follows: If the image contains text, output only the exact text found—without any explanations, context, or extra words. If the image does not contain text, provide a precise and descriptive summary of the visual content or scene. Ensure the response is direct and strictly adheres to this format. ",
+            messages: "Examine the provided image and respond as follows: If the image contains text, output only the exact text found—without any explanations, context, or extra words.If the image contains a aptitude question your task is to solve the question accordingly or If the image does not contain text, provide a precise and descriptive summary of the visual content or scene. Ensure the response is direct and strictly adheres to this format. ",
             image_url: imageUrl,
           });
     
