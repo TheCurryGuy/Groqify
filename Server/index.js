@@ -98,15 +98,27 @@ app.post('/api/chat', async (req, res) => {
       response = out || 'No response generated.';
     } else {
       // Otherwise, will use Groq as usual
-      const result = await groqClient.chat.completions.create({
-        messages,
-        model,
-        temperature: 1,
-        max_tokens: 2048,
-        top_p: 1,
-        stream: false,
-      });
-      response = result.choices[0]?.message?.content || 'No response generated.';
+      if(model === 'Deepseek-R1'){
+        const result = await groqClient.chat.completions.create({
+          messages,
+          model : 'deepseek-r1-distill-llama-70b',
+          temperature: 1,
+          max_tokens: 4096,
+          top_p: 1,
+          stream: false,
+        });
+        response = result.choices[0]?.message?.content || 'No response generated.';
+      } else {
+        const result = await groqClient.chat.completions.create({
+          messages,
+          model,
+          temperature: 1,
+          max_tokens: 4096,
+          top_p: 1,
+          stream: false,
+        });
+        response = result.choices[0]?.message?.content || 'No response generated.';
+      }
     }
 
     res.json({ response });
@@ -128,7 +140,7 @@ app.post('/api/chat/v2', async (req, res) => {
       ],
       model: backupModel,
       temperature: 1.5,
-      max_tokens: 2048,
+      max_tokens: 4096,
       top_p: 1,
       stream: false,
     });
@@ -165,7 +177,7 @@ app.post('/api/chat/v3', async (req, res) => {
     ],
     "model": "llama-3.2-11b-vision-preview",
     "temperature": 1,
-    "max_tokens": 2048,
+    "max_tokens": 4096,
     "top_p": 1,
     "stream": false,
     "stop": null
