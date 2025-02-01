@@ -51,7 +51,9 @@ const Chatbot = () => {
     'gemini-1.5-pro',
     'gemma2-9b-it',
   ];
-
+  const sanitizeResponse = (text) => {
+    return text.replace(/<think>[\s\S]*?<\/think>/g, ""); // Removes <think> content
+  };
   const HistoryRemover = () => {
     localStorage.removeItem('chatHistory');
     setHistory([]);
@@ -349,7 +351,7 @@ const Chatbot = () => {
                       remarkPlugins={[remarkMath, remarkGfm, remarkCodeTitles]} 
                       rehypePlugins={[rehypeKatex, rehypeHighlight]} 
                     >
-                      {message.text}
+                      {sanitizeResponse(message.text)}
                     </ReactMarkdown>
                     <button className = "copy-btn" onClick={() => handleCopyCode(message.text)}>Copy Response</button>
                   </div>
