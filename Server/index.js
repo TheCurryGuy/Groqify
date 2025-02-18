@@ -202,6 +202,84 @@ app.post('/api/chat/v3', async (req, res) => {
     }
 });
 
+//PROJECT PURPOSE EXPERIMENTATION
+app.post('/api/chat/research', async (req, res) => {
+  const { messages: originalMessages, model } = req.body;
+  let response = '';
+  const originalUserQuery = originalMessages.filter(msg => msg.role === 'user').map(msg => msg.content).join('\n');
+  const CRITIQUE_PROMPT = `Please critically analyze this response in relation to the original requirement ("${originalUserQuery}"). Identify weaknesses, missed points, and areas for improvement. Provide a significantly enhanced version that's more precise, comprehensive, and aligned with the user's needs. Previous response: {response}`;
+
+  try {
+    let currentMessages = [...originalMessages];
+    
+    for (let i = 0; i < 4; i++) {
+      if (model && model.startsWith('gemini')) {
+        const geminiModel = genAI.getGenerativeModel({ model });
+        const prompt = currentMessages.map(msg => msg.content).join('\n');
+        const chatSession = geminiModel.startChat({ generationConfig });
+        const result = await chatSession.sendMessage(prompt);
+        response = result.response.text();
+      } else if (model && model.startsWith('gpt')) {
+        const result = await openAIClient.chat.completions.create({
+          messages: currentMessages,
+          temperature: 0.7,  // Slightly lower temp for refinement
+          top_p: 1.0,
+          max_tokens: 2048,
+          model: model
+        });
+        response = result.choices[0]?.message?.content || '';
+      } else if (model === 'Qwen2.5-1.5B-Instruct' || model === 'Phi-3.5-mini-instruct') {
+        let tempModel = model === 'Qwen2.5-1.5B-Instruct' ? 'Qwen/' + model : 'microsoft/' + model;
+        let out = "";
+        const stream = hfclient.chatCompletionStream({
+          model: tempModel,
+          messages: currentMessages,
+          temperature: 0.7,
+          max_tokens: 1024,
+          top_p: 0.7
+        });
+        for await (const chunk of stream) {
+          if (chunk.choices?.[0]?.delta?.content) {
+            out += chunk.choices[0].delta.content;
+          }
+        }
+        response = out || '';
+      } else {
+        // Groq models handling
+        let groqModel = model;
+        if (model === 'Deepseek-R1-Llama') groqModel = 'deepseek-r1-distill-llama-70b';
+        if (model === 'Deepseek-R1-Qwen') groqModel = 'deepseek-r1-distill-qwen-32b';
+
+        const result = await groqClient.chat.completions.create({
+          messages: currentMessages,
+          model: groqModel,
+          temperature: 0.7,
+          max_tokens: 4096,
+          top_p: 1,
+          stream: false,
+        });
+        response = result.choices[0]?.message?.content || '';
+      }
+
+      // Prepare for next iteration
+      if (i < 3) {
+        currentMessages.push({
+          role: 'user',
+          content: CRITIQUE_PROMPT.replace('{response}', response)
+        });
+      }
+    }
+
+    res.json({ response });
+  } catch (error) {
+    console.error('Iterative processing error:', error);
+    res.status(500).json({ 
+      error: 'Failed to complete iterative refinement',
+      details: error.message
+    });
+  }
+});
+
 app.listen(3000, () => {
   console.log(`Server is running `);
 });
