@@ -98,7 +98,7 @@ app.post('/api/chat', async (req, res) => {
       response = out || 'No response generated.';
     } else {
       // Otherwise, will use Groq as usual
-      if(model === 'Deepseek-R1'){
+      if(model === 'Deepseek-R1-Llama'){
         const result = await groqClient.chat.completions.create({
           messages,
           model : 'deepseek-r1-distill-llama-70b',
@@ -108,7 +108,18 @@ app.post('/api/chat', async (req, res) => {
           stream: false,
         });
         response = result.choices[0]?.message?.content || 'No response generated.';
-      } else {
+      } else if(model === 'Deepseek-R1-Qwen'){
+        const result = await groqClient.chat.completions.create({
+          messages,
+          model : 'deepseek-r1-distill-qwen-32b',
+          temperature: 1,
+          max_tokens: 4096,
+          top_p: 1,
+          stream: false,
+        });
+        response = result.choices[0]?.message?.content || 'No response generated.';
+      }
+      else {
         const result = await groqClient.chat.completions.create({
           messages,
           model,
