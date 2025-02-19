@@ -14,6 +14,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const BACKUP_API_KEY = process.env.BACKUP_API_KEY;
 const HF_API_KEY = process.env.HF_API_KEY;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 app.use(express.json());
 app.use(cors({
@@ -35,6 +36,10 @@ const generationConfig = {
   maxOutputTokens: 3072,
   responseMimeType: "text/plain",
 };
+const openRouterAIClient = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: OPENROUTER_API_KEY,
+});
 
 //gpt
 const token = OPENAI_API_KEY; // Fetch OpenAI API key from environment
@@ -119,16 +124,11 @@ app.post('/api/chat', async (req, res) => {
         });
         response = result.choices[0]?.message?.content || 'No response generated.';
       }else if (model === 'Deepseek-v3') {
-        const openRouterResponse = await axios.post("https://openrouter.ai/api/v1/chat/completions", {
+        const completion = await openRouterAIClient.chat.completions.create({
           model: "deepseek/deepseek-chat:free",
           messages,
-        }, {
-          headers: {
-            "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-            "Content-Type": "application/json"
-          }
         });
-        response = openRouterResponse.data.choices[0]?.message?.content || 'No response generated.';
+        response = completion.choices[0]?.message?.content || 'No response generated.';
       } else {
         const result = await groqClient.chat.completions.create({
           messages,
