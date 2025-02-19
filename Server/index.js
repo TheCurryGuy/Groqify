@@ -205,29 +205,41 @@ app.post('/api/chat/v3', async (req, res) => {
 //PROJECT PURPOSE EXPERIMENTATION
 app.post('/api/chat/research', async (req, res) => {
   const { messages: originalMessages, model } = req.body;
-  let response = '';
-  const originalUserQuery = originalMessages.filter(msg => msg.role === 'user').map(msg => msg.content).join('\n');
-  const CRITIQUE_PROMPT = `Please critically analyze this response in relation to the original requirement ("${originalUserQuery}"). Identify weaknesses, missed points, and areas for improvement. Provide a significantly enhanced version that's more precise, comprehensive, and aligned with the user's needs. Previous response: {response}`;
+  const originalUserMessages = originalMessages.filter(msg => msg.role === 'user');
+  const CRITIQUE_PROMPT = (lastResponse) => `
+Please critically analyze this response in relation to the original requirement.
+Identify areas for improvement and provide an enhanced version that better meets the user's needs.
+Focus specifically on:
+- Precision and accuracy
+- Completeness of information
+- Clarity of expression
+- Practical usefulness
+
+Original user request: ${originalUserMessages.map(m => m.content).join('\n')}
+Previous response: ${lastResponse}
+`;
 
   try {
-    let currentMessages = [...originalMessages];
-    
+    let currentResponse = '';
+    let currentMessages = [...originalUserMessages];
+
     for (let i = 0; i < 4; i++) {
+      // Get response from LLM
       if (model && model.startsWith('gemini')) {
         const geminiModel = genAI.getGenerativeModel({ model });
         const prompt = currentMessages.map(msg => msg.content).join('\n');
         const chatSession = geminiModel.startChat({ generationConfig });
         const result = await chatSession.sendMessage(prompt);
-        response = result.response.text();
+        currentResponse = result.response.text();
       } else if (model && model.startsWith('gpt')) {
         const result = await openAIClient.chat.completions.create({
           messages: currentMessages,
-          temperature: 0.7,  // Slightly lower temp for refinement
+          temperature: Math.max(0.7 - (i * 0.1)), // Gradually reduce randomness
           top_p: 1.0,
           max_tokens: 2048,
           model: model
         });
-        response = result.choices[0]?.message?.content || '';
+        currentResponse = result.choices[0]?.message?.content || '';
       } else if (model === 'Qwen2.5-1.5B-Instruct' || model === 'Phi-3.5-mini-instruct') {
         let tempModel = model === 'Qwen2.5-1.5B-Instruct' ? 'Qwen/' + model : 'microsoft/' + model;
         let out = "";
@@ -243,7 +255,7 @@ app.post('/api/chat/research', async (req, res) => {
             out += chunk.choices[0].delta.content;
           }
         }
-        response = out || '';
+        currentResponse = out || '';
       } else {
         // Groq models handling
         let groqModel = model;
@@ -253,26 +265,33 @@ app.post('/api/chat/research', async (req, res) => {
         const result = await groqClient.chat.completions.create({
           messages: currentMessages,
           model: groqModel,
-          temperature: 0.7,
-          max_tokens: 4096,
+          temperature: 1 - (i * 0.1),
+          max_tokens: 3072,
           top_p: 1,
           stream: false,
         });
-        response = result.choices[0]?.message?.content || '';
+        currentResponse = result.choices[0]?.message?.content || '';
       }
 
       // Prepare for next iteration
       if (i < 3) {
-        currentMessages.push({
-          role: 'user',
-          content: CRITIQUE_PROMPT.replace('{response}', response)
-        });
+        currentMessages = [
+          ...originalUserMessages,
+          {
+            role: 'assistant',
+            content: currentResponse
+          },
+          {
+            role: 'user',
+            content: CRITIQUE_PROMPT(currentResponse)
+          }
+        ];
       }
     }
 
-    res.json({ response });
+    res.json({ response: currentResponse });
   } catch (error) {
-    console.error('Iterative processing error:', error);
+    console.error('Iterative refinement error:', error);
     res.status(500).json({ 
       error: 'Failed to complete iterative refinement',
       details: error.message
