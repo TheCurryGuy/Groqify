@@ -206,16 +206,17 @@ app.post('/api/chat/v3', async (req, res) => {
 app.post('/api/chat/research', async (req, res) => {
   const { messages: originalMessages, model } = req.body;
   const originalUserMessages = originalMessages.filter(msg => msg.role === 'user');
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  
   const CRITIQUE_PROMPT = (lastResponse) => `
-Please critically analyze this response in relation to the original requirement.
-Identify areas for improvement and provide an enhanced version that better meets the user's needs.
-Focus specifically on:
-- Precision and accuracy
-- Completeness of information
-- Clarity of expression
-- Practical usefulness
+Please improve this response while maintaining the original requirements:
+- Carefully review the initial request
+- Identify 3 key areas for improvement in the previous response
+- Enhance clarity and depth
+- Ensure technical accuracy
+- Dont Explain the things you code in the response rather just provide the improved code if applicable
 
-Original user request: ${originalUserMessages.map(m => m.content).join('\n')}
+Original request: ${originalUserMessages.map(m => m.content).join('\n')}
 Previous response: ${lastResponse}
 `;
 
@@ -234,7 +235,7 @@ Previous response: ${lastResponse}
       } else if (model && model.startsWith('gpt')) {
         const result = await openAIClient.chat.completions.create({
           messages: currentMessages,
-          temperature: Math.max(0.7 - (i * 0.1)), // Gradually reduce randomness
+          temperature: Math.max(0.7 - (i * 0.15), 0.3),
           top_p: 1.0,
           max_tokens: 2048,
           model: model
@@ -246,7 +247,7 @@ Previous response: ${lastResponse}
         const stream = hfclient.chatCompletionStream({
           model: tempModel,
           messages: currentMessages,
-          temperature: 0.7,
+          temperature: 0.7 - (i * 0.1),
           max_tokens: 1024,
           top_p: 0.7
         });
@@ -265,27 +266,22 @@ Previous response: ${lastResponse}
         const result = await groqClient.chat.completions.create({
           messages: currentMessages,
           model: groqModel,
-          temperature: 1 - (i * 0.1),
-          max_tokens: 3072,
+          temperature: 1 - (i * 0.15),
+          max_tokens: 4096,
           top_p: 1,
           stream: false,
         });
         currentResponse = result.choices[0]?.message?.content || '';
       }
 
-      // Prepare for next iteration
+      // Add delay after each iteration except the final one
       if (i < 3) {
         currentMessages = [
           ...originalUserMessages,
-          {
-            role: 'assistant',
-            content: currentResponse
-          },
-          {
-            role: 'user',
-            content: CRITIQUE_PROMPT(currentResponse)
-          }
+          { role: 'assistant', content: currentResponse },
+          { role: 'user', content: CRITIQUE_PROMPT(currentResponse) }
         ];
+        await delay(70000); // 60-second delay
       }
     }
 
