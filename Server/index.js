@@ -118,8 +118,18 @@ app.post('/api/chat', async (req, res) => {
           stream: false,
         });
         response = result.choices[0]?.message?.content || 'No response generated.';
-      }
-      else {
+      }else if (model === 'Deepseek-v3') {
+        const openRouterResponse = await axios.post("https://openrouter.ai/api/v1/chat/completions", {
+          model: "deepseek/deepseek-chat:free",
+          messages,
+        }, {
+          headers: {
+            "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+        response = openRouterResponse.data.choices[0]?.message?.content || 'No response generated.';
+      } else {
         const result = await groqClient.chat.completions.create({
           messages,
           model,
