@@ -184,7 +184,7 @@ const Chatbot = () => {
     };
     
     try {
-      const botResponse = await fetchResponse('https://groqify-server.vercel.app/api/chat/research');
+      const botResponse = await fetchResponse('https://groqify-server.vercel.app/api/chat');
       setMessages([...newMessages, { type: 'bot', text: botResponse }]);
       updateHistory(userInput, botResponse);
     } catch (error) {
