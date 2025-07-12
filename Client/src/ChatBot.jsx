@@ -36,12 +36,12 @@ const Chatbot = () => {
   
   const models = [
     'Deepseek-R1-Llama',
-    'Deepseek-R1-Qwen',
-    'Deepseek-v3',
-    'Qwen-2.5-32b',
-    'Qwen-2.5-coder-32b',
-    'Llama-3.3-70b-versatile',
-    'Llama-3.1-8b-instant',
+    'meta-llama/llama-4-maverick-17b-128e-instruct',
+    'mistral-saba-24b',
+    'qwen-qwq-32b',
+    'qwen/qwen3-32b',
+    'llama-3.3-70b-versatile',
+    'meta-llama/llama-4-scout-17b-16e-instruct',
     'Mixtral-8x7b-32768',
     'Llama3-70b-8192',
     'Llama3-8b-8192',
